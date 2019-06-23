@@ -1,6 +1,6 @@
 package com.spingo.op_rabbit
 
-import com.rabbitmq.client.Address
+import com.rabbitmq.client.{Address, ConnectionFactory}
 import com.typesafe.config.{ConfigFactory, ConfigValueFactory}
 import org.scalatest.{FunSpec, Matchers}
 
@@ -83,7 +83,7 @@ class ConnectionParamsUriSpec extends FunSpec with Matchers {
         params.virtualHost should equal("vhost")
         params.connectionTimeout should equal(10000)
         params.requestedHeartbeat should equal(60)
-        params.requestedChannelMax should equal(0)
+        params.requestedChannelMax should equal(ConnectionFactory.DEFAULT_CHANNEL_MAX)
       }
 
       it("compose multiple host configuration with TLS protection and additional URL parameters") {
