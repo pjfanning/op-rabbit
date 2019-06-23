@@ -41,7 +41,7 @@ object HeaderValue {
     val serializable = value
   }
   case class MapHeaderValue(value: Map[String, HeaderValue]) extends HeaderValue {
-    lazy val serializable = value.mapValues(_.serializable).asJava
+    lazy val serializable = value.mapValues(_.serializable).toMap.asJava
     override def asString(sourceCharset: Charset) = {
       val b = new StringBuilder()
       b += '{'
