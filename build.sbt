@@ -16,12 +16,12 @@ val assertNoApplicationConf = taskKey[Unit]("Makes sure application.conf isn't p
 val commonSettings = Seq(
   organization := "com.github.pjfanning",
   version := appProperties.getProperty("version"),
-  scalaVersion := "2.12.8",
-  crossScalaVersions := Seq("2.12.8", "2.13.0"),
+  scalaVersion := "2.13.0",
+  crossScalaVersions := Seq("2.12.6", "2.13.0"),
   libraryDependencies ++= Seq(
     "com.chuusai" %%  "shapeless" % "2.3.3",
     "com.typesafe" % "config" % "1.3.4",
-    "com.newmotion" %% "akka-rabbitmq" % "5.0.0",
+    "com.github.pjfanning" %% "akka-rabbitmq" % "5.1.0",
     "org.slf4j" % "slf4j-api" % "1.7.26",
     "ch.qos.logback" % "logback-classic" % "1.2.3" % "test",
     "org.scalatest" %% "scalatest" % "3.0.8" % "test",
@@ -56,6 +56,7 @@ val commonSettings = Seq(
 
 )
 
+// removed `akka-stream` temporarily
 lazy val `op-rabbit` = (project in file(".")).
   enablePlugins(ScalaUnidocPlugin).
   settings(commonSettings: _*).
@@ -63,7 +64,7 @@ lazy val `op-rabbit` = (project in file(".")).
     description := "The opinionated Rabbit-MQ plugin",
     name := "op-rabbit").
   dependsOn(core).
-  aggregate(core, `play-json`, airbrake, `akka-stream`, json4s, `spray-json`, circe)
+  aggregate(core, `play-json`, airbrake, json4s, `spray-json`, circe)
 
 
 lazy val core = (project in file("./core")).
@@ -73,17 +74,17 @@ lazy val core = (project in file("./core")).
     name := "op-rabbit-core"
   )
 
-lazy val demo = (project in file("./demo")).
-  settings(commonSettings: _*).
-  settings(
-    libraryDependencies ++= Seq(
-      "ch.qos.logback" % "logback-classic" % "1.1.7",
-      "com.typesafe.akka" %% "akka-slf4j" % akkaVersion)).
-  settings(
-    name := "op-rabbit-demo"
-  ).
-  dependsOn(
-    `play-json`, `akka-stream`)
+//lazy val demo = (project in file("./demo")).
+//  settings(commonSettings: _*).
+//  settings(
+//    libraryDependencies ++= Seq(
+//      "ch.qos.logback" % "logback-classic" % "1.2.3",
+//      "com.typesafe.akka" %% "akka-slf4j" % akkaVersion)).
+//  settings(
+//    name := "op-rabbit-demo"
+//  ).
+//  dependsOn(
+//    `play-json`, `akka-stream`)
 
 
 
@@ -109,7 +110,7 @@ lazy val `spray-json` = (project in file("./addons/spray-json")).
   settings(commonSettings: _*).
   settings(
     name := "op-rabbit-spray-json",
-    libraryDependencies += "io.spray" %% "spray-json" % "1.3.4").
+    libraryDependencies += "io.spray" %% "spray-json" % "1.3.5").
   dependsOn(core)
 
 lazy val airbrake = (project in file("./addons/airbrake/")).
@@ -119,18 +120,18 @@ lazy val airbrake = (project in file("./addons/airbrake/")).
     libraryDependencies += "io.airbrake" % "airbrake-java" % "2.2.8").
   dependsOn(core)
 
-lazy val `akka-stream` = (project in file("./addons/akka-stream")).
-  settings(commonSettings: _*).
-  settings(
-    name := "op-rabbit-akka-stream",
-    libraryDependencies ++= Seq(
-      "com.timcharper"    %% "acked-streams" % "2.1.1",
-      "com.typesafe.akka" %% "akka-stream" % akkaVersion),
-    unmanagedResourceDirectories in Test ++= Seq(
-      file(".").getAbsoluteFile / "core" / "src" / "test" / "resources"),
-    unmanagedSourceDirectories in Test ++= Seq(
-      file(".").getAbsoluteFile / "core" / "src" / "test" / "scala" / "com" / "spingo" / "op_rabbit" / "helpers")).
-  dependsOn(core)
+//lazy val `akka-stream` = (project in file("./addons/akka-stream")).
+//  settings(commonSettings: _*).
+//  settings(
+//    name := "op-rabbit-akka-stream",
+//    libraryDependencies ++= Seq(
+//      "com.timcharper"    %% "acked-streams" % "2.1.1",
+//      "com.typesafe.akka" %% "akka-stream" % akkaVersion),
+//    unmanagedResourceDirectories in Test ++= Seq(
+//      file(".").getAbsoluteFile / "core" / "src" / "test" / "resources"),
+//    unmanagedSourceDirectories in Test ++= Seq(
+//      file(".").getAbsoluteFile / "core" / "src" / "test" / "scala" / "com" / "spingo" / "op_rabbit" / "helpers")).
+//  dependsOn(core)
 
 lazy val circe = (project in file("./addons/circe")).
   settings(commonSettings: _*).
