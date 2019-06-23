@@ -14,10 +14,10 @@ val appProperties = {
 val assertNoApplicationConf = taskKey[Unit]("Makes sure application.conf isn't packaged")
 
 val commonSettings = Seq(
-  organization := "com.spingo",
+  organization := "com.github.pjfanning",
   version := appProperties.getProperty("version"),
   scalaVersion := "2.12.8",
-  crossScalaVersions := Seq("2.12.8", "2.11.12", "2.13.0"),
+  crossScalaVersions := Seq("2.12.8", "2.13.0"),
   libraryDependencies ++= Seq(
     "com.chuusai" %%  "shapeless" % "2.3.3",
     "com.typesafe" % "config" % "1.3.4",
@@ -25,7 +25,6 @@ val commonSettings = Seq(
     "org.slf4j" % "slf4j-api" % "1.7.26",
     "ch.qos.logback" % "logback-classic" % "1.2.3" % "test",
     "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-    "com.spingo" %% "scoped-fixtures" % "2.0.0" % "test",
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test",
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % "test"
@@ -39,11 +38,11 @@ val commonSettings = Seq(
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
   licenses := Seq("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-  homepage := Some(url("https://github.com/SpinGo/op-rabbit")),
+  homepage := Some(url("https://github.com/pjfanning/op-rabbit")),
   pomExtra := {
     <scm>
-      <url>https://github.com/SpinGo/op-rabbit</url>
-      <connection>scm:git:git@github.com:SpinGo/op-rabbit.git</connection>
+      <url>https://github.com/pjfanning/op-rabbit</url>
+      <connection>scm:git:git@github.com:pjfanning/op-rabbit.git</connection>
     </scm>
     <developers>
       <developer>
