@@ -15,7 +15,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 trait RabbitTestHelpers extends ScopedFixtures {
-  implicit val timeout = Timeout(30 seconds)
+  implicit val timeout = Timeout(5 seconds)
   val killConnection = new MessageForPublicationLike {
     val dropIfNoChannel = true
     def apply(c: Channel): Unit = {
