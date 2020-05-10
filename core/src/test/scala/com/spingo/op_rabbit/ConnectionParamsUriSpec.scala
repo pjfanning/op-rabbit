@@ -155,7 +155,9 @@ class ConnectionParamsUriSpec extends AnyFunSpec with Matchers {
         params.ssl shouldBe true
         params.trustEverything shouldBe false
 
-        params.createDefaultTrustManager() shouldBe a[X509TrustManager]
+        val tm = params.createDefaultTrustManager()
+        tm should not be (null)
+        tm.getAcceptedIssuers should not be empty
       }
     }
   }

@@ -7,7 +7,7 @@ import com.rabbitmq.client._
 import com.rabbitmq.client.impl.DefaultExceptionHandler
 import com.typesafe.config.Config
 import javax.net.SocketFactory
-import javax.net.ssl.{SSLContext, TrustManager, TrustManagerFactory, X509TrustManager}
+import javax.net.ssl.{SSLContext, TrustManagerFactory, X509TrustManager}
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -69,7 +69,7 @@ case class ConnectionParams(
     }
   }
 
-  private[op_rabbit] def createDefaultTrustManager(): TrustManager = {
+  private[op_rabbit] def createDefaultTrustManager(): X509TrustManager = {
     val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm)
     tmf.init(null.asInstanceOf[KeyStore])
     val x509TrustManagers = tmf.getTrustManagers.collectFirst {
