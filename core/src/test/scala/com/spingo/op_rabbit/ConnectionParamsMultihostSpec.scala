@@ -11,31 +11,31 @@ class ConnectionParamsMultihostSpec extends AnyFunSpec with Matchers {
   private val defaultConfig = ConfigFactory.load("application.conf").getConfig("op-rabbit.connection")
   private val hostsPath = "hosts"
 
-  private def makeConfig(hosts: String, baseConfig: Config): Config =
+  private def makeConfig(hosts: String): Config =
     defaultConfig.withValue(hostsPath, ConfigValueFactory.fromAnyRef(hosts))
 
-  private def makeConfig(hosts: List[String], baseConfig: Config): Config =
+  private def makeConfig(hosts: List[String]): Config =
     defaultConfig.withValue(hostsPath, ConfigValueFactory.fromAnyRef(hosts.asJava))
 
   describe("fromConfig constructor") {
     describe("reading from artificially created config") {
       it("accepts hosts as array of strings") {
         val hosts = List("localhost", "github.com")
-        val config = makeConfig(hosts, defaultConfig)
+        val config = makeConfig(hosts)
 
         assertHosts(config, hosts)
       }
 
       it("accepts hosts as comma-separated string") {
         val hosts = List("localhost", "github.com")
-        val config = makeConfig(hosts.mkString(","), defaultConfig)
+        val config = makeConfig(hosts.mkString(","))
 
         assertHosts(config, hosts)
       }
 
       it("trims extra whitespace in comma-separated list") {
         val hosts = List("localhost", "github.com")
-        val config = makeConfig(hosts.map(str => " " + str + " ").mkString(","), defaultConfig)
+        val config = makeConfig(hosts.map(str => " " + str + " ").mkString(","))
 
         assertHosts(config, hosts)
       }

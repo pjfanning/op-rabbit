@@ -1,12 +1,13 @@
 package com.spingo.op_rabbit
 
 import java.net.URI
+import java.security.KeyStore
 
 import com.rabbitmq.client._
 import com.rabbitmq.client.impl.DefaultExceptionHandler
 import com.typesafe.config.Config
 import javax.net.SocketFactory
-import javax.net.ssl.{SSLContext, TrustManagerFactory, X509TrustManager}
+import javax.net.ssl.{SSLContext, TrustManager, TrustManagerFactory, X509TrustManager}
 
 import scala.collection.JavaConverters._
 import scala.util.Try
@@ -63,14 +64,19 @@ case class ConnectionParams(
       } else {
         val protocol = ConnectionFactory.computeDefaultTlsProtocol(
           SSLContext.getDefault.getSupportedSSLParameters.getProtocols)
-        val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm)
-        val x509TrustManagers = tmf.getTrustManagers.collectFirst {
-          case tmf: X509TrustManager => tmf
-        }
-        factory.useSslProtocol(protocol, x509TrustManagers.headOption.getOrElse(
-          throw new IllegalStateException("Failed to find default x509TrustManager")))
+        factory.useSslProtocol(protocol, createDefaultTrustManager())
       }
     }
+  }
+
+  private[op_rabbit] def createDefaultTrustManager(): TrustManager = {
+    val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm)
+    tmf.init(null.asInstanceOf[KeyStore])
+    val x509TrustManagers = tmf.getTrustManagers.collectFirst {
+      case tmf: X509TrustManager => tmf
+    }
+    x509TrustManagers.headOption.getOrElse(
+      throw new IllegalStateException("Failed to find default x509TrustManager"))
   }
 }
 

@@ -2,6 +2,7 @@ package com.spingo.op_rabbit
 
 import com.rabbitmq.client.{Address, ConnectionFactory}
 import com.typesafe.config.{ConfigFactory, ConfigValueFactory}
+import javax.net.ssl.X509TrustManager
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -136,6 +137,25 @@ class ConnectionParamsUriSpec extends AnyFunSpec with Matchers {
           ConnectionParams.fromConfig(config.getConfig(connectionPath))
         }
         e.getMessage should equal("The URL authority should contains user and password")
+      }
+    }
+
+
+    describe("using config with ssl") {
+      it("be able to create a trust manager") {
+        val testConfig = defaultConfig.getConfig(connectionPath)
+          .withValue("ssl", ConfigValueFactory.fromAnyRef(true))
+          .withValue("trust-everything", ConfigValueFactory.fromAnyRef(false))
+        val params = ConnectionParams.fromConfig(testConfig)
+
+        params.hosts should contain theSameElementsAs Seq(new Address("localhost", 5672))
+        params.username should equal("guest")
+        params.password should equal("guest")
+        params.connectionTimeout should equal(1000)
+        params.ssl shouldBe true
+        params.trustEverything shouldBe false
+
+        params.createDefaultTrustManager() shouldBe a[X509TrustManager]
       }
     }
   }
