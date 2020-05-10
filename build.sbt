@@ -17,7 +17,7 @@ val commonSettings = Seq(
   organization := "com.github.pjfanning",
   version := appProperties.getProperty("version"),
   scalaVersion := "2.13.2",
-  crossScalaVersions := Seq("2.12.11", "2.13.1"),
+  crossScalaVersions := Seq("2.12.11", "2.13.2"),
   libraryDependencies ++= Seq(
     "com.chuusai" %%  "shapeless" % "2.3.3",
     "com.typesafe" % "config" % "1.4.0",
