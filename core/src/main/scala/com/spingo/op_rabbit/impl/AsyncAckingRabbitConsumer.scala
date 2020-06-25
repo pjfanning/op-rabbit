@@ -6,7 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger
 import akka.actor.{Actor, ActorLogging, Terminated}
 import akka.pattern.pipe
 import com.rabbitmq.client.AMQP.BasicProperties
-import com.spingo.op_rabbit.RabbitExceptionMatchers.{ConnectionGoneException, NonFatalRabbitException}
+import com.spingo.op_rabbit.RabbitExceptionMatchers.{ConnectionGoneException, NonFatalRabbitException, ShuttingDownException}
+import com.rabbitmq.client.impl.AMQImpl.Channel._
 import com.newmotion.akka.rabbitmq.{Channel, DefaultConsumer, Envelope}
 import scala.collection.mutable
 import scala.concurrent.{Await, ExecutionContext, Future, Promise}
@@ -135,6 +136,14 @@ private [op_rabbit] class AsyncAckingRabbitConsumer[T](
       }
     ))
   } catch {
+    case ShuttingDownException(e) =>
+      e.getReason match {
+        case close: Close if close.getReplyCode == 403 && subscription.exclusive =>
+          log.warning("{} and subscription exclusive set to true - propagating exception", close.getReplyText)
+          throw e
+        case _ =>
+          None
+      }
     case ConnectionGoneException(_) =>
       None
   }
