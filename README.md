@@ -9,7 +9,7 @@
 
 See https://github.com/SpinGo/op-rabbit for main documentation.
 
-This fork adds a little functionality and has published jars for Scala 2.13 support (v2.2.1) and for Play-JSON 2.8.0 (v2.3.0).
+This fork adds a little functionality and has published jars for Scala 2.13 support (v2.2.1) and for Play-JSON 2.8 (v2.3.0).
 
 ## Installation
 
