@@ -14,7 +14,7 @@ private [op_rabbit] class ConfirmedPublisherActor(connection: ActorRef) extends 
   private case class Ack(deliveryTag: Long, multiple: Boolean) extends InternalAckOrNack
   private case class Nack(deliveryTag: Long, multiple: Boolean) extends InternalAckOrNack
 
-  override def preStart =
+  override def preStart(): Unit =
     connection ! CreateChannel(ChannelActor.props({ (channel, actor) =>
       channel.confirmSelect()
       channel.addConfirmListener(new ConfirmListener {
@@ -31,7 +31,7 @@ private [op_rabbit] class ConfirmedPublisherActor(connection: ActorRef) extends 
       self ! channel
     }), Some("confirmed-publisher-channel"))
 
-  override def postStop =
+  override def postStop(): Unit =
     channelActor foreach (context stop _)
 
   private var channelActor: Option[ActorRef] = None

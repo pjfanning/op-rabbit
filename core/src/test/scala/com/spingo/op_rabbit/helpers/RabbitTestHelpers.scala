@@ -46,11 +46,11 @@ trait RabbitTestHelpers extends ScopedFixtures {
     val done = Promise[Unit]
     actorSystem.actorOf(Props(new Actor {
       import akka.actor.FSM._
-      override def preStart: Unit = {
+      override def preStart(): Unit = {
         connectionActor ! SubscribeTransitionCallBack(self)
       }
 
-      override def postStop: Unit = {
+      override def postStop(): Unit = {
         connectionActor ! UnsubscribeTransitionCallBack(self)
       }
 

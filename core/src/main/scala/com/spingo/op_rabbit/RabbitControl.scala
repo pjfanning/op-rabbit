@@ -104,12 +104,12 @@ class RabbitControl(connection: Either[ConnectionParams, ActorRef]) extends Acto
       withDispatcher(RabbitConfig.channelDispatcher(context.system)),
     name = CONFIRMED_PUBLISHER_NAME)
 
-  override def preStart =
+  override def preStart(): Unit =
     connectionActor ! CreateChannel(
       ChannelActor.props().
         withDispatcher(RabbitConfig.channelDispatcher(context.system)))
 
-  override def postStop: Unit = {
+  override def postStop(): Unit = {
     // Don't restart the child actors!!!
   }
 
