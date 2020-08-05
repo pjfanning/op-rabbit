@@ -2,7 +2,7 @@ import java.util.Properties
 
 val json4sVersion = "3.6.9"
 val circeVersion = "0.13.0"
-val akkaVersion = "2.6.7"
+val akkaVersion = "2.6.8"
 val playVersion = "2.8.1"
 
 val appProperties = {
@@ -17,7 +17,7 @@ val commonSettings = Seq(
   organization := "com.github.pjfanning",
   version := appProperties.getProperty("version"),
   scalaVersion := "2.13.3",
-  crossScalaVersions := Seq("2.12.11", "2.13.3"),
+  crossScalaVersions := Seq("2.12.12", "2.13.3"),
   libraryDependencies ++= Seq(
     "com.chuusai" %%  "shapeless" % "2.3.3",
     "com.typesafe" % "config" % "1.4.0",
