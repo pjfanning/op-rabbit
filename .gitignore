@@ -82,3 +82,4 @@ scratch/
 .history
 erl_crash.dump
 README.md.html
+.bsp/sbt.json
