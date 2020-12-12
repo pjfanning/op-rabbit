@@ -16,7 +16,7 @@ This fork adds a little functionality and has published jars for Scala 2.13 supp
 Op-Rabbit is available on Maven Central
 
 ```scala
-val opRabbitVersion = "2.5.0"
+val opRabbitVersion = "2.5.1"
 
 libraryDependencies ++= Seq(
   "com.github.pjfanning" %% "op-rabbit-core"        % opRabbitVersion,
