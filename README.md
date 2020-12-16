@@ -16,7 +16,7 @@ This fork adds a little functionality and has published jars for Scala 2.13 supp
 Op-Rabbit is available on Maven Central
 
 ```scala
-val opRabbitVersion = "2.5.1"
+val opRabbitVersion = "2.6.0"
 
 libraryDependencies ++= Seq(
   "com.github.pjfanning" %% "op-rabbit-core"        % opRabbitVersion,
@@ -28,6 +28,21 @@ libraryDependencies ++= Seq(
 
 ### Scala Version Compatibility Matrix:
 
+#### op-rabbit 2.6.x
+
+Supports Scala 2.13 and Scala 2.12.
+
+| module                       | dependsOn                | version     |
+| ---------------------------- | ------------------------ | ----------- |
+| op-rabbit-core               | akka                     | 2.6.x       |
+|                              | akka-rabbitmq            | 6.0.x       |
+|                              | shapeless                | 2.3.x       |
+|                              | type-safe config         | 1.4.x       |
+| op-rabbit-play-json          | play-json                | 2.9.x       |
+| op-rabbit-circe              | circe                    | 0.13.x      |
+| op-rabbit-json4s             | json4s                   | 3.6.x       |
+| op-rabbit-airbrake           | airbrake                 | 2.2.x       |
+
 #### op-rabbit 2.5.x and 2.4.x
 
 Supports Scala 2.13 and Scala 2.12.
@@ -38,7 +53,7 @@ Supports Scala 2.13 and Scala 2.12.
 |                              | akka-rabbitmq            | 5.1.x       |
 |                              | shapeless                | 2.3.x       |
 |                              | type-safe config         | 1.4.x       |
-| op-rabbit-play-json          | play-json                | 2.8.x       |
+| op-rabbit-play-json          | play-json                | 2.8.x/2.9.x |
 | op-rabbit-circe              | circe                    | 0.13.x      |
 | op-rabbit-json4s             | json4s                   | 3.6.x       |
 | op-rabbit-airbrake           | airbrake                 | 2.2.x       |
