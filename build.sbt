@@ -1,8 +1,8 @@
 import java.util.Properties
 
-val json4sVersion = "3.6.10"
+val json4sVersion = "3.6.11"
 val circeVersion = "0.13.0"
-val akkaVersion = "2.6.12"
+val akkaVersion = "2.6.13"
 val playVersion = "2.9.2"
 
 val appProperties = {
@@ -17,7 +17,7 @@ val commonSettings = Seq(
   organization := "com.github.pjfanning",
   version := appProperties.getProperty("version"),
   scalaVersion := "2.13.4",
-  crossScalaVersions := Seq("2.12.12", "2.13.4"),
+  crossScalaVersions := Seq("2.12.12", "2.13.5"),
   libraryDependencies ++= Seq(
     "com.chuusai" %%  "shapeless" % "2.3.3",
     "com.typesafe" % "config" % "1.4.1",
@@ -26,7 +26,7 @@ val commonSettings = Seq(
     "org.slf4j" % "slf4j-api" % "1.7.30",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
     "ch.qos.logback" % "logback-classic" % "1.2.3" % Test,
-    "org.scalatest" %% "scalatest" % "3.2.5" % Test,
+    "org.scalatest" %% "scalatest" % "3.2.6" % Test,
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Test
