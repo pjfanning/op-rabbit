@@ -16,7 +16,7 @@ val assertNoApplicationConf = taskKey[Unit]("Makes sure application.conf isn't p
 val commonSettings = Seq(
   organization := "com.github.pjfanning",
   version := appProperties.getProperty("version"),
-  scalaVersion := "2.13.4",
+  scalaVersion := "2.13.5",
   crossScalaVersions := Seq("2.12.12", "2.13.5"),
   libraryDependencies ++= Seq(
     "com.chuusai" %%  "shapeless" % "2.3.3",
@@ -26,7 +26,7 @@ val commonSettings = Seq(
     "org.slf4j" % "slf4j-api" % "1.7.30",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
     "ch.qos.logback" % "logback-classic" % "1.2.3" % Test,
-    "org.scalatest" %% "scalatest" % "3.2.6" % Test,
+    "org.scalatest" %% "scalatest" % "3.2.7" % Test,
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Test
@@ -112,7 +112,7 @@ lazy val `spray-json` = (project in file("./addons/spray-json")).
   settings(commonSettings: _*).
   settings(
     name := "op-rabbit-spray-json",
-    libraryDependencies += "io.spray" %% "spray-json" % "1.3.5").
+    libraryDependencies += "io.spray" %% "spray-json" % "1.3.6").
   dependsOn(core)
 
 lazy val airbrake = (project in file("./addons/airbrake/")).
