@@ -2,7 +2,7 @@ import java.util.Properties
 
 val json4sVersion = "3.6.11"
 val circeVersion = "0.13.0"
-val akkaVersion = "2.6.13"
+val akkaVersion = "2.6.14"
 val playVersion = "2.9.2"
 
 val appProperties = {
@@ -22,7 +22,7 @@ val commonSettings = Seq(
     "com.chuusai" %%  "shapeless" % "2.3.3",
     "com.typesafe" % "config" % "1.4.1",
     "com.newmotion" %% "akka-rabbitmq" % "6.0.0",
-    "com.rabbitmq" % "amqp-client" % "5.11.0",
+    "com.rabbitmq" % "amqp-client" % "5.12.0",
     "org.slf4j" % "slf4j-api" % "1.7.30",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
     "ch.qos.logback" % "logback-classic" % "1.2.3" % Test,
