@@ -19,7 +19,7 @@ val commonSettings = Seq(
   scalaVersion := "2.13.5",
   crossScalaVersions := Seq("2.12.12", "2.13.5"),
   libraryDependencies ++= Seq(
-    "com.chuusai" %%  "shapeless" % "2.3.3",
+    "com.chuusai" %%  "shapeless" % "2.3.4",
     "com.typesafe" % "config" % "1.4.1",
     "com.newmotion" %% "akka-rabbitmq" % "6.0.0",
     "com.rabbitmq" % "amqp-client" % "5.12.0",
