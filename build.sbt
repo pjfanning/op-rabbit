@@ -26,7 +26,7 @@ val commonSettings = Seq(
     "org.slf4j" % "slf4j-api" % "1.7.30",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
     "ch.qos.logback" % "logback-classic" % "1.2.3" % Test,
-    "org.scalatest" %% "scalatest" % "3.2.7" % Test,
+    "org.scalatest" %% "scalatest" % "3.2.9" % Test,
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Test
