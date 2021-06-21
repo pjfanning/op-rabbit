@@ -2,11 +2,8 @@ package com.spingo.op_rabbit.stream
 
 import com.spingo.op_rabbit._
 import com.spingo.op_rabbit.Message._
-import akka.stream.stage.GraphStage
-import akka.actor.{ActorRef, Props}
-import akka.actor.FSM
+import akka.actor.ActorRef
 import akka.pattern.ask
-import akka.stream.scaladsl.Sink
 import scala.concurrent.{Future, Promise}
 import scala.concurrent.duration._
 import com.timcharper.acked.AckedSink
@@ -15,7 +12,6 @@ import akka.stream._
 import akka.stream.stage.GraphStageLogic
 import akka.stream.stage.GraphStageWithMaterializedValue
 import akka.stream.stage.InHandler
-import akka.stream.scaladsl.Flow
 import akka.util.Timeout
 
 
@@ -130,7 +126,7 @@ object MessagePublisherSink {
     @param rabbitControl An actor
     @param timeoutAfter The duration for which we'll wait for a message to be acked; note, timeouts and non-acknowledged messages will cause the upstream elements to fail. The sink will not throw an exception.
     */
-  def apply(rabbitControl: ActorRef, timeoutAfter: FiniteDuration = 30 seconds, qos: Int = 8): AckedSink[Message, Future[Unit]] = AckedSink {
+  def apply(rabbitControl: ActorRef, timeoutAfter: FiniteDuration = 30.seconds, qos: Int = 8): AckedSink[Message, Future[Unit]] = AckedSink {
     new MessagePublisherSink(rabbitControl, timeoutAfter, qos)
   }
 }

@@ -1,15 +1,16 @@
 package com.spingo.op_rabbit
 package stream
 
-import akka.actor._
-import akka.stream.{ActorAttributes, ActorMaterializer, ActorMaterializerSettings, Supervision}
+import akka.stream.{ActorAttributes, Supervision}
 import akka.stream.scaladsl.{Keep, Sink}
 import com.rabbitmq.client.AMQP.BasicProperties
 import com.rabbitmq.client.Envelope
 import com.spingo.op_rabbit.Directives._
 import com.spingo.op_rabbit.helpers.{DeleteQueue, RabbitTestHelpers}
 import com.spingo.scoped_fixtures.ScopedFixtures
-import com.timcharper.acked.{AckedSink, AckedSource}
+import com.timcharper.acked.AckedSink
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.concurrent.duration._
@@ -27,7 +28,6 @@ class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with
 
   trait RabbitFixtures {
     implicit val executionContext = ExecutionContext.global
-    implicit val materializer = ActorMaterializer()
     val exceptionReported = Promise[Boolean]
     implicit val errorReporting = new RabbitErrorLogging {
       def apply(name: String, message: String, exception: Throwable, consumerTag: String, envelope: Envelope, properties: BasicProperties, body: Array[Byte]): Unit = {
