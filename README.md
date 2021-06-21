@@ -22,7 +22,8 @@ libraryDependencies ++= Seq(
   "com.github.pjfanning" %% "op-rabbit-core"        % opRabbitVersion,
   "com.github.pjfanning" %% "op-rabbit-play-json"   % opRabbitVersion,
   "com.github.pjfanning" %% "op-rabbit-json4s"      % opRabbitVersion,
-  "com.github.pjfanning" %% "op-rabbit-airbrake"    % opRabbitVersion
+  "com.github.pjfanning" %% "op-rabbit-airbrake"    % opRabbitVersion,
+  "com.github.pjfanning" %% "op-rabbit-akka-stream" % opRabbitVersion
 )
 ```
 
@@ -42,6 +43,7 @@ Supports Scala 2.13 and Scala 2.12.
 | op-rabbit-circe              | circe                    | 0.13.x      |
 | op-rabbit-json4s             | json4s                   | 3.6.x       |
 | op-rabbit-airbrake           | airbrake                 | 2.2.x       |
+| op-rabbit-akka-stream        | akka-stream              | 2.6.x       |
 
 #### op-rabbit 2.5.x and 2.4.x
 
@@ -105,6 +107,8 @@ Supports Scala 2.13 and Scala 2.12.
     - Report consumer exceptions to airbrake, using the
       [Airbrake](https://github.com/airbrake/airbrake-java) Java
       library.
+- `op-rabbit-akka-stream` [API](https://op-rabbit.github.io/docs/index.html#com.spingo.op_rabbit.stream.package)
+    - Process or publish messages using akka-stream. 
 
 ## Usage
 
