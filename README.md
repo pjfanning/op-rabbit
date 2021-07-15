@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pjfanning/op-rabbit.svg?branch=master)](https://travis-ci.org/pjfanning/op-rabbit)
+[![Build Status](https://travis-ci.com/pjfanning/op-rabbit.svg?branch=master)](https://travis-ci.com/pjfanning/op-rabbit)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/op-rabbit_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/op-rabbit_2.13)
 
 # Op-Rabbit
