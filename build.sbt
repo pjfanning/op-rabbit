@@ -1,6 +1,6 @@
 import java.util.Properties
 
-val json4sVersion = "3.6.11"
+val json4sVersion = "4.0.3"
 val circeVersion = "0.14.1"
 val akkaVersion = "2.6.15"
 val playVersion = "2.9.2"
@@ -19,13 +19,13 @@ val commonSettings = Seq(
   scalaVersion := "2.13.6",
   crossScalaVersions := Seq("2.12.14", "2.13.6"),
   libraryDependencies ++= Seq(
-    "com.chuusai" %%  "shapeless" % "2.3.4",
+    "com.chuusai" %%  "shapeless" % "2.3.7",
     "com.typesafe" % "config" % "1.4.1",
     "com.newmotion" %% "akka-rabbitmq" % "6.0.0",
     "com.rabbitmq" % "amqp-client" % "5.13.0",
-    "org.slf4j" % "slf4j-api" % "1.7.31",
+    "org.slf4j" % "slf4j-api" % "1.7.32",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
-    "ch.qos.logback" % "logback-classic" % "1.2.3" % Test,
+    "ch.qos.logback" % "logback-classic" % "1.2.5" % Test,
     "org.scalatest" %% "scalatest" % "3.2.9" % Test,
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
