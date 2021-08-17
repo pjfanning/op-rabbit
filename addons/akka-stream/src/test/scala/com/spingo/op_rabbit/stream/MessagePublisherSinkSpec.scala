@@ -2,7 +2,6 @@ package com.spingo.op_rabbit
 package stream
 
 import akka.actor._
-import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Keep, Sink}
 import com.rabbitmq.client.AMQP.BasicProperties
 import com.rabbitmq.client.Envelope
@@ -10,6 +9,8 @@ import com.spingo.op_rabbit.Directives._
 import com.spingo.op_rabbit.helpers.RabbitTestHelpers
 import com.timcharper.acked.AckedSource
 import com.spingo.scoped_fixtures.ScopedFixtures
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.util.{Failure, Try}
@@ -26,7 +27,6 @@ class MessagePublisherSinkSpec extends AnyFunSpec with Matchers with ScopedFixtu
   }
 
   trait RabbitFixtures {
-    implicit val materializer = ActorMaterializer()
     val exceptionReported = Promise[Boolean]
     implicit val errorReporting = new RabbitErrorLogging {
       def apply(name: String, message: String, exception: Throwable, consumerTag: String, envelope: Envelope, properties: BasicProperties, body: Array[Byte]): Unit = {
