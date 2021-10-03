@@ -131,9 +131,9 @@ lazy val `akka-stream` = (project in file("./addons/akka-stream")).
       //"com.timcharper"    %% "acked-streams" % "2.1.1",
       "com.github.timcharper.acked-stream" %% "acked-streams" % "0faf9027c9",
       "com.typesafe.akka" %% "akka-stream" % akkaVersion),
-    unmanagedResourceDirectories in Test ++= Seq(
+    Test / unmanagedResourceDirectories ++= Seq(
       file(".").getAbsoluteFile / "core" / "src" / "test" / "resources"),
-    unmanagedSourceDirectories in Test ++= Seq(
+    Test / unmanagedSourceDirectories ++= Seq(
       file(".").getAbsoluteFile / "core" / "src" / "test" / "scala" / "com" / "spingo" / "op_rabbit" / "helpers")).
   dependsOn(core)
 
