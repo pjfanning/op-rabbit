@@ -19,14 +19,14 @@ val commonSettings = Seq(
   scalaVersion := "2.13.8",
   crossScalaVersions := Seq("2.12.15", "2.13.8"),
   libraryDependencies ++= Seq(
-    "com.chuusai" %%  "shapeless" % "2.3.7",
+    "com.chuusai" %%  "shapeless" % "2.3.8",
     "com.typesafe" % "config" % "1.4.2",
     "com.newmotion" %% "akka-rabbitmq" % "6.0.0",
-    "com.rabbitmq" % "amqp-client" % "5.14.0",
-    "org.slf4j" % "slf4j-api" % "1.7.35",
+    "com.rabbitmq" % "amqp-client" % "5.14.2",
+    "org.slf4j" % "slf4j-api" % "1.7.36",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
     "ch.qos.logback" % "logback-classic" % "1.2.10" % Test,
-    "org.scalatest" %% "scalatest" % "3.2.10" % Test,
+    "org.scalatest" %% "scalatest" % "3.2.11" % Test,
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Test
