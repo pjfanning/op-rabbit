@@ -1,6 +1,6 @@
 import java.util.Properties
 
-val json4sVersion = "4.0.3"
+val json4sVersion = "4.0.4"
 val circeVersion = "0.14.1"
 val akkaVersion = "2.6.19"
 val playVersion = "2.9.2"
@@ -25,7 +25,7 @@ val commonSettings = Seq(
     "com.rabbitmq" % "amqp-client" % "5.14.2",
     "org.slf4j" % "slf4j-api" % "1.7.36",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
-    "ch.qos.logback" % "logback-classic" % "1.2.10" % Test,
+    "ch.qos.logback" % "logback-classic" % "1.2.11" % Test,
     "org.scalatest" %% "scalatest" % "3.2.11" % Test,
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
