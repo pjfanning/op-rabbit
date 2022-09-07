@@ -3,6 +3,8 @@
 
 # Op-Rabbit
 
+:warning: This project is being ramped down due to Akka's move away from [Open Source](https://www.lightbend.com/blog/why-we-are-changing-the-license-for-akka).
+
 ##### An opinionated RabbitMQ library for Scala and Akka.
 
 # Documentation
