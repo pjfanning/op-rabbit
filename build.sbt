@@ -116,9 +116,8 @@ lazy val `pekko-stream` = (project in file("./addons/pekko-stream")).
   settings(commonSettings: _*).
   settings(
     name := "op-rabbit-pekko-stream",
-    resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
     libraryDependencies ++= Seq(
-      "com.github.pjfanning" %% "acked-streams" % "1.0.0-SNAPSHOT",
+      "com.github.pjfanning" %% "acked-streams" % "1.0.0",
       "org.apache.pekko" %% "pekko-stream" % pekkoVersion),
     Test / unmanagedResourceDirectories ++= Seq(
       file(".").getAbsoluteFile / "core" / "src" / "test" / "resources"),
