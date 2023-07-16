@@ -2,7 +2,7 @@ import java.util.Properties
 
 val json4sVersion = "4.0.5"
 val circeVersion = "0.14.2"
-val akkaVersion = "2.6.20"
+val pekkoVersion = "1.0.0"
 val playVersion = "2.9.2"
 
 val appProperties = {
@@ -16,20 +16,20 @@ val assertNoApplicationConf = taskKey[Unit]("Makes sure application.conf isn't p
 val commonSettings = Seq(
   organization := "com.github.pjfanning",
   version := appProperties.getProperty("version"),
-  scalaVersion := "2.13.8",
-  crossScalaVersions := Seq("2.12.15", "2.13.8"),
+  scalaVersion := "2.13.11",
+  crossScalaVersions := Seq("2.12.18", "2.13.11"),
   libraryDependencies ++= Seq(
     "com.chuusai" %%  "shapeless" % "2.3.9",
     "com.typesafe" % "config" % "1.4.2",
-    "com.newmotion" %% "akka-rabbitmq" % "6.0.0",
-    "com.rabbitmq" % "amqp-client" % "5.14.2",
+    "com.github.pjfanning" %% "pekko-rabbitmq" % "7.0.0",
+    "com.rabbitmq" % "amqp-client" % "5.14.3",
     "org.slf4j" % "slf4j-api" % "1.7.36",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
-    "ch.qos.logback" % "logback-classic" % "1.2.11" % Test,
-    "org.scalatest" %% "scalatest" % "3.2.11" % Test,
-    "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
-    "com.typesafe.akka" %% "akka-slf4j" % akkaVersion % Test
+    "ch.qos.logback" % "logback-classic" % "1.2.12" % Test,
+    "org.scalatest" %% "scalatest" % "3.2.16" % Test,
+    "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
+    "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
+    "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion % Test
   ),
   publishMavenStyle := true,
   publishTo := {
@@ -52,13 +52,17 @@ val commonSettings = Seq(
         <name>Tim Harper</name>
         <url>http://spingo.com</url>
       </developer>
+      <developer>
+        <id>pjfanning</id>
+        <name>PJ Fanning</name>
+        <url>https://github.com/pjfanning</url>
+      </developer>
     </developers>
   },
   autoAPIMappings := true // sbt-unidoc setting
 
 )
 
-// removed `akka-stream` temporarily
 lazy val `op-rabbit` = (project in file(".")).
   enablePlugins(ScalaUnidocPlugin).
   settings(commonSettings: _*).
@@ -66,7 +70,7 @@ lazy val `op-rabbit` = (project in file(".")).
     description := "The opinionated Rabbit-MQ plugin",
     name := "op-rabbit").
   dependsOn(core).
-  aggregate(core, `play-json`, airbrake, `akka-stream`, json4s, `spray-json`, circe)
+  aggregate(core, `play-json`, airbrake, `pekko-stream`, json4s, `spray-json`, circe)
 
 
 lazy val core = (project in file("./core")).
@@ -75,20 +79,6 @@ lazy val core = (project in file("./core")).
   settings(
     name := "op-rabbit-core"
   )
-
-//lazy val demo = (project in file("./demo")).
-//  settings(commonSettings: _*).
-//  settings(
-//    libraryDependencies ++= Seq(
-//      "ch.qos.logback" % "logback-classic" % "1.2.3",
-//      "com.typesafe.akka" %% "akka-slf4j" % akkaVersion)).
-//  settings(
-//    name := "op-rabbit-demo"
-//  ).
-//  dependsOn(
-//    `play-json`, `akka-stream`)
-
-
 
 lazy val json4s = (project in file("./addons/json4s")).
   settings(commonSettings: _*).
@@ -122,15 +112,15 @@ lazy val airbrake = (project in file("./addons/airbrake/")).
     libraryDependencies += "io.airbrake" % "airbrake-java" % "2.2.8").
   dependsOn(core)
 
-lazy val `akka-stream` = (project in file("./addons/akka-stream")).
+lazy val `pekko-stream` = (project in file("./addons/pekko-stream")).
   settings(commonSettings: _*).
   settings(
-    name := "op-rabbit-akka-stream",
+    name := "op-rabbit-pekko-stream",
     resolvers += "jitpack" at "https://jitpack.io",
     libraryDependencies ++= Seq(
       //"com.timcharper"    %% "acked-streams" % "2.1.1",
       "com.github.timcharper.acked-stream" %% "acked-streams" % "0faf9027c9",
-      "com.typesafe.akka" %% "akka-stream" % akkaVersion),
+      "org.apache.pekko" %% "pekko-stream" % pekkoVersion),
     Test / unmanagedResourceDirectories ++= Seq(
       file(".").getAbsoluteFile / "core" / "src" / "test" / "resources"),
     Test / unmanagedSourceDirectories ++= Seq(

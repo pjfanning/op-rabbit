@@ -1,116 +1,53 @@
-[![Build Status](https://travis-ci.com/pjfanning/op-rabbit.svg?branch=master)](https://travis-ci.com/pjfanning/op-rabbit)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/op-rabbit_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/op-rabbit_2.13)
 
 # Op-Rabbit
 
-:warning: This project is being ramped down due to Akka's move away from [Open Source](https://www.lightbend.com/blog/why-we-are-changing-the-license-for-akka).
-
-##### An opinionated RabbitMQ library for Scala and Akka.
+##### An opinionated RabbitMQ library for Scala and Apache Pekko.
 
 # Documentation
 
-See https://github.com/SpinGo/op-rabbit for main documentation.
+See https://github.com/SpinGo/op-rabbit for the main documentation.
 
-This fork adds a little functionality and has published jars for Scala 2.13 support (v2.2.1) and for Play-JSON 2.8 (v2.3.0).
+This fork switches from Akka to Apache Pekko (releases v3 and above)
+
+Releases for v2 were for Akka. Akka will no longer be supported by this project.
 
 ## Installation
 
-Op-Rabbit is available on Maven Central
+Op-Rabbit is available on Maven Central.
 
 ```scala
-val opRabbitVersion = "2.6.4"
+val opRabbitVersion = "3.0.0"
 
 libraryDependencies ++= Seq(
-  "com.github.pjfanning" %% "op-rabbit-core"        % opRabbitVersion,
-  "com.github.pjfanning" %% "op-rabbit-play-json"   % opRabbitVersion,
-  "com.github.pjfanning" %% "op-rabbit-json4s"      % opRabbitVersion,
-  "com.github.pjfanning" %% "op-rabbit-airbrake"    % opRabbitVersion,
-  "com.github.pjfanning" %% "op-rabbit-akka-stream" % opRabbitVersion
+  "com.github.pjfanning" %% "op-rabbit-core"         % opRabbitVersion,
+  "com.github.pjfanning" %% "op-rabbit-play-json"    % opRabbitVersion,
+  "com.github.pjfanning" %% "op-rabbit-json4s"       % opRabbitVersion,
+  "com.github.pjfanning" %% "op-rabbit-airbrake"     % opRabbitVersion,
+  "com.github.pjfanning" %% "op-rabbit-pekko-stream" % opRabbitVersion
 )
 ```
 
-### Scala Version Compatibility Matrix:
-
-#### op-rabbit 2.6.x
-
-Supports Scala 2.13 and Scala 2.12.
-
-| module                       | dependsOn                | version     |
-| ---------------------------- | ------------------------ | ----------- |
-| op-rabbit-core               | akka                     | 2.6.x       |
-|                              | akka-rabbitmq            | 6.0.x       |
-|                              | shapeless                | 2.3.x       |
-|                              | type-safe config         | 1.4.x       |
-| op-rabbit-play-json          | play-json                | 2.9.x       |
-| op-rabbit-circe              | circe                    | 0.13.x      |
-| op-rabbit-json4s             | json4s                   | 3.6.x       |
-| op-rabbit-airbrake           | airbrake                 | 2.2.x       |
-| op-rabbit-akka-stream        | akka-stream              | 2.6.x       |
-
-#### op-rabbit 2.5.x and 2.4.x
-
-Supports Scala 2.13 and Scala 2.12.
-
-| module                       | dependsOn                | version     |
-| ---------------------------- | ------------------------ | ----------- |
-| op-rabbit-core               | akka                     | 2.6.x       |
-|                              | akka-rabbitmq            | 5.1.x       |
-|                              | shapeless                | 2.3.x       |
-|                              | type-safe config         | 1.4.x       |
-| op-rabbit-play-json          | play-json                | 2.8.x/2.9.x |
-| op-rabbit-circe              | circe                    | 0.13.x      |
-| op-rabbit-json4s             | json4s                   | 3.6.x       |
-| op-rabbit-airbrake           | airbrake                 | 2.2.x       |
-
-#### op-rabbit 2.3.x
-
-Supports Scala 2.13 and Scala 2.12.
-
-| module                       | dependsOn                | version     |
-| ---------------------------- | ------------------------ | ----------- |
-| op-rabbit-core               | akka                     | 2.5.x/2.6.x |
-|                              | akka-rabbitmq            | 5.1.x       |
-|                              | shapeless                | 2.3.x       |
-|                              | type-safe config         | 1.3.x/1.4.x |
-| op-rabbit-play-json          | play-json                | 2.8.x       |
-| op-rabbit-circe              | circe                    | 0.12.x      |
-| op-rabbit-json4s             | json4s                   | 3.6.x       |
-| op-rabbit-airbrake           | airbrake                 | 2.2.x       |
-
-#### op-rabbit 2.2.x
-
-Supports Scala 2.13 and Scala 2.12.
-
-| module                       | dependsOn                | version   |
-| ---------------------------- | ------------------------ | --------- |
-| op-rabbit-core               | akka                     | 2.5.x     |
-|                              | akka-rabbitmq            | 5.1.x     |
-|                              | shapeless                | 2.3.x     |
-|                              | type-safe config         | 1.3.x     |
-| op-rabbit-play-json          | play-json                | 2.7.x     |
-| op-rabbit-json4s             | json4s                   | 3.6.x     |
-| op-rabbit-airbrake           | airbrake                 | 2.2.x     |
-
 ## A high-level overview of the available components:
 
-- `op-rabbit-core` [API](http://spingo-oss.s3.amazonaws.com/docs/op-rabbit/core/current/index.html)
+- `op-rabbit-core`
     - Implements basic patterns for serialization and message
       processing.
-- `op-rabbit-play-json` [API](https://op-rabbit.github.io/docs/index.html#com.spingo.op_rabbit.PlayJsonSupport$)
+- `op-rabbit-play-json`
     - Easily use
       [Play Json](https://www.playframework.com/documentation/2.4.x/ScalaJson)
       formats to publish or consume messages; automatically sets
       RabbitMQ message headers to indicate content type.
-- `op-rabbit-json4s` [API](https://op-rabbit.github.io/docs/index.html#com.spingo.op_rabbit.Json4sSupport$)
+- `op-rabbit-json4s`
     - Easily use [Json4s](http://json4s.org) to serialization
       messages; automatically sets RabbitMQ message headers to
       indicate content type.
-- `op-rabbit-airbrake` [API](https://op-rabbit.github.io/docs/index.html#com.spingo.op_rabbit.AirbrakeLogger)
+- `op-rabbit-airbrake`
     - Report consumer exceptions to airbrake, using the
       [Airbrake](https://github.com/airbrake/airbrake-java) Java
       library.
-- `op-rabbit-akka-stream` [API](https://op-rabbit.github.io/docs/index.html#com.spingo.op_rabbit.stream.package)
-    - Process or publish messages using akka-stream. 
+- `op-rabbit-pekko-stream`
+    - Process or publish messages using pekko-stream. 
 
 ## Usage
 
@@ -170,8 +107,8 @@ or
 Boot up the RabbitMQ control actor:
 
 ```scala
-import com.spingo.op_rabbit.RabbitControl
-import akka.actor.{ActorSystem, Props}
+import com.github.pjfanning.op_rabbit.RabbitControl
+import org.apache.pekko.actor.{ActorSystem, Props}
 
 implicit val actorSystem = ActorSystem("such-system")
 val rabbitControl = actorSystem.actorOf(Props[RabbitControl])
@@ -182,8 +119,8 @@ val rabbitControl = actorSystem.actorOf(Props[RabbitControl])
 (this example uses `op-rabbit-play-json`)
 
 ```scala
-import com.spingo.op_rabbit.PlayJsonSupport._
-import com.spingo.op_rabbit._
+import com.github.pjfanning.op_rabbit.PlayJsonSupport._
+import com.github.pjfanning.op_rabbit._
 import play.api.libs.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -264,7 +201,7 @@ can use multiple declaratives via multiple nested functions, as
 follows:
 
 ```scala
-import com.spingo.op_rabbit.properties._
+import com.github.pjfanning.op_rabbit.properties._
 
 // Nested directives
 // ...
@@ -352,12 +289,12 @@ By default:
   [UnconfirmedMessage](http://spingo-oss.s3.amazonaws.com/docs/op-rabbit/core/current/index.html#com.spingo.op_rabbit.UnconfirmedMessage)
   if you'd like `at-most-once` delivery, instead.
 - If you would like to be notified of confirmation, use the
-  [ask](http://doc.akka.io/docs/akka/2.3.12/scala/actors.html#Send_messages)
+  [ask](https://pekko.apache.org/docs/pekko/current/stream/operators/Source-or-Flow/ask.html)
   pattern:
 
   ```scala
-  import akka.pattern.ask
-  import akka.util.Timeout
+  import org.apache.pekko.pattern.ask
+  import org.apache.pekko.util.Timeout
   import scala.concurrent.duration._
   implicit val timeout = Timeout(5 seconds)
   val received = (
@@ -367,9 +304,9 @@ By default:
   ).mapTo[ConfirmResponse]
   ```
 
-### Consuming using Akka streams
+### Consuming using Pekko streams
 
-(this example uses `op-rabbit-play-json` and `op-rabbit-akka-streams`)
+(this example uses `op-rabbit-play-json` and `op-rabbit-pekko-streams`)
 
 ```scala
 
@@ -400,7 +337,7 @@ and an
 can convert an acked stream into a normal stream by calling
 `AckedStream.acked`; once messages flow passed the `acked` component,
 they are considered acknowledged, and acknowledgement tracking is no
-longer a concern (and thus, you are free to use the akka-stream
+longer a concern (and thus, you are free to use the pekko-stream
 library in its entirety).
 
 #### Stream failures and recovery strategies
@@ -410,14 +347,14 @@ section, recovery strategies are triggered if [`fail`](https://github.com/SpinGo
 is called or if a failed future is passed to `ack`. For streams, we have to do
 something a little different.
 
-To trigger the specified recovery strategy when using `op-rabbit-akka-stream`
+To trigger the specified recovery strategy when using `op-rabbit-pekko-stream`
 and its `acked` components, an exception should be thrown within the `acked`
 part of the graph. However, the default exception-handling behavior in
-`akka-stream` is stopping the graph, which in `op-rabbit`'s case would mean
+`pekko-stream` is stopping the graph, which in `op-rabbit`'s case would mean
 stopping the consumer and preventing further messages from being processed.
 To explicitly allow the graph to continue running, a ResumingDecider supervision
 strategy should be declared. (To learn more about supervision strategies please
-refer to the [Akka Streams docs](https://doc.akka.io/docs/akka/current/stream/stream-error.html#supervision-strategies)).
+refer to the [Pekko Streams docs](https://pekko.apache.org/docs/pekko/current/stream/stream-error.html#supervision-strategies)).
 
 ```scala
   implicit val system = ActorSystem()
@@ -465,7 +402,7 @@ to `airbrake`, import / set the following implicit RabbitErrorLogging
 in the scope where your consumer is instantiated:
 
 ```scala
-import com.spingo.op_rabbit.{Slf4jLogger, AirbrakeLogger}
+import com.github.pjfanning.op_rabbit.{Slf4jLogger, AirbrakeLogger}
 
 implicit val rabbitErrorLogging = Slf4jLogger + AirbrakeLogger.fromConfig
 ```
@@ -493,6 +430,5 @@ object Slf4jLogger extends RabbitErrorLogging {
 
 Op-Rabbit was created by [Tim Harper](http://timcharper.com)
 
-This library builds upon the excellent
-[Akka RabbitMQ client](https://github.com/thenewmotion/akka-rabbitmq)
-by Yaroslav Klymko.
+This library builds upon the
+[Pekko RabbitMQ client](https://github.com/pjfanning/pekko-rabbitmq).

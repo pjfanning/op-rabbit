@@ -8,7 +8,7 @@ The entire suite (including all modules), is run by issuing the following:
 
     sbt test
 
-To test a single module, such as `akka-stream`, run the following:
+To test a single module, such as `pekko-stream`, run the following:
 
-    sbt akka-stream/test
+    sbt pekko-stream/test
 

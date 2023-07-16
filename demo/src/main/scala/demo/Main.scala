@@ -1,7 +1,7 @@
 package demo
 
-import akka.actor.{ ActorSystem, Props }
-import com.spingo.op_rabbit.{ Directives, Message, PlayJsonSupport, Publisher, Queue, RabbitControl, RecoveryStrategy, Subscription }
+import org.apache.pekko.actor.{ ActorSystem, Props }
+import com.github.pjfanning.op_rabbit.{ Directives, Message, PlayJsonSupport, Publisher, Queue, RabbitControl, RecoveryStrategy, Subscription }
 import scala.concurrent.ExecutionContext
 import play.api.libs.json._
 
