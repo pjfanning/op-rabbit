@@ -327,11 +327,11 @@ RabbitSource(
 ```
 
 Note: `RabbitSource` yields an
-[AckedSource](https://github.com/timcharper/acked-stream/blob/master/src/main/scala/com/timcharper/acked/AckedSource.scala),
+[AckedSource](https://github.com/pjfanning/acked-stream/blob/main/src/main/scala/com/timcharper/acked/AckedSource.scala),
 which can be combined with an
-[AckedFlow](https://github.com/timcharper/acked-stream/blob/master/src/main/scala/com/timcharper/acked/AckedFlowOps.scala#L519)
+[AckedFlow](https://github.com/pjfanning/acked-stream/blob/main/src/main/scala/com/timcharper/acked/AckedFlowOps.scala#L519)
 and an
-[AckedSink](https://github.com/timcharper/acked-stream/blob/master/src/main/scala/com/timcharper/acked/AckedSink.scala)
+[AckedSink](https://github.com/pjfanning/acked-stream/blob/main/src/main/scala/com/timcharper/acked/AckedSink.scala)
 (such as
 [`MessagePublisherSink`](http://spingo-oss.s3.amazonaws.com/docs/op-rabbit/akka-stream/current/index.html#com.spingo.op_rabbit.stream.MessagePublisherSink$)). You
 can convert an acked stream into a normal stream by calling

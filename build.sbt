@@ -116,15 +116,14 @@ lazy val `pekko-stream` = (project in file("./addons/pekko-stream")).
   settings(commonSettings: _*).
   settings(
     name := "op-rabbit-pekko-stream",
-    resolvers += "jitpack" at "https://jitpack.io",
+    resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
     libraryDependencies ++= Seq(
-      //"com.timcharper"    %% "acked-streams" % "2.1.1",
-      "com.github.timcharper.acked-stream" %% "acked-streams" % "0faf9027c9",
+      "com.github.pjfanning" %% "acked-streams" % "1.0.0-SNAPSHOT",
       "org.apache.pekko" %% "pekko-stream" % pekkoVersion),
     Test / unmanagedResourceDirectories ++= Seq(
       file(".").getAbsoluteFile / "core" / "src" / "test" / "resources"),
     Test / unmanagedSourceDirectories ++= Seq(
-      file(".").getAbsoluteFile / "core" / "src" / "test" / "scala" / "com" / "spingo" / "op_rabbit" / "helpers")).
+      file(".").getAbsoluteFile / "core" / "src" / "test" / "scala" / "com" / "github" / "pjfanning" / "op_rabbit" / "helpers")).
   dependsOn(core)
 
 lazy val circe = (project in file("./addons/circe")).

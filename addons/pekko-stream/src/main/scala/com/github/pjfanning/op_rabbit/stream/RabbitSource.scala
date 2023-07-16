@@ -1,9 +1,10 @@
-package com.github.pjfanning.op_rabbit.stream
+package com.github.pjfanning.op_rabbit
+package stream
 
 import org.apache.pekko.actor._
 import org.apache.pekko.stream.OverflowStrategy
 import org.apache.pekko.stream.scaladsl.Source
-import com.timcharper.acked.{AckedSource, AckTup}
+import com.github.pjfanning.acked.{AckedSource, AckTup}
 import scala.concurrent.{ExecutionContext, Promise}
 import scala.util.{Failure,Success}
 import shapeless._
@@ -17,7 +18,7 @@ private [op_rabbit] trait MessageExtractor[Out] {
 
 /**
   * Creates an op-rabbit consumer whose messages are delivered through an
-  * [[https://github.com/timcharper/acked-stream/blob/master/src/main/scala/com/timcharper/acked/AckedSource.scala
+  * [[https://github.com/pjfanning/acked-stream/blob/main/src/main/scala/com/timcharper/acked/AckedSource.scala
   * AckedSource]]. Message order guarantees are maintained.
   *
   * IMPORTANT NOTE ON ACKNOWLEDGED MESSAGES
@@ -28,7 +29,7 @@ private [op_rabbit] trait MessageExtractor[Out] {
   * The 'Acked' variety of streams provide type-safe guarantees that
   * acknowledgments aren't dropped on the floor. Filtering a message from the
   * stream (via collect, filter, or mapConcat -> Nil), for example, will cause
-  * the incomming RabbitMQ message to be acknowledged.
+  * the incoming RabbitMQ message to be acknowledged.
   *
   * If you begin constructing your own Acked components and interacting with the
   * `AckTup[T]` type directly (or, `(Promise[Unit], T)`), you must take caution

@@ -1,14 +1,14 @@
-package com.github.pjfanning.op_rabbit.stream
+package com.github.pjfanning.op_rabbit
+package stream
 
+import com.github.pjfanning.acked.AckedSource
 import com.github.pjfanning.op_rabbit.{Message, Publisher, Queue, RecoveryStrategy}
+import com.github.pjfanning.op_rabbit.Directives._
 import com.github.pjfanning.op_rabbit.helpers.RabbitTestHelpers
 import org.apache.pekko.actor._
 import org.apache.pekko.stream.scaladsl.{Keep, Sink}
 import com.rabbitmq.client.AMQP.BasicProperties
 import com.rabbitmq.client.Envelope
-import com.github.pjfanning.op_rabbit.Directives._
-import com.github.pjfanning.op_rabbit.helpers.RabbitTestHelpers
-import com.timcharper.acked.AckedSource
 import com.spingo.scoped_fixtures.ScopedFixtures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers

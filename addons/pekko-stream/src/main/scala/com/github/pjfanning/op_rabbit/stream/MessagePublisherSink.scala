@@ -1,5 +1,7 @@
-package com.github.pjfanning.op_rabbit.stream
+package com.github.pjfanning.op_rabbit
+package stream
 
+import com.github.pjfanning.acked.AckedSink
 import com.github.pjfanning.op_rabbit.Message.ConfirmResponse
 import com.github.pjfanning.op_rabbit._
 import com.github.pjfanning.op_rabbit.Message._
@@ -8,9 +10,8 @@ import org.apache.pekko.pattern.ask
 
 import scala.concurrent.{Future, Promise}
 import scala.concurrent.duration._
-import com.timcharper.acked.AckedSink
-
 import scala.util.{Failure, Success, Try}
+
 import org.apache.pekko.stream._
 import org.apache.pekko.stream.stage.GraphStageLogic
 import org.apache.pekko.stream.stage.GraphStageWithMaterializedValue
@@ -97,7 +98,7 @@ private class MessagePublisherSink(rabbitControl: ActorRef, timeoutAfter: Finite
 }
 
 /**
-  A MessagePublisherSink (an [[https://github.com/timcharper/acked-stream/blob/master/src/main/scala/com/timcharper/acked/AckedSink.scala AckedSink]]) publishes each input [[Message]], and either acks or fails the upstream element, depending on [[ConfirmResponse ConfirmResponse]].
+  A MessagePublisherSink (an [[https://github.com/pjfanning/acked-stream/blob/main/src/main/scala/com/timcharper/acked/AckedSink.scala AckedSink]]) publishes each input [[Message]], and either acks or fails the upstream element, depending on [[ConfirmResponse ConfirmResponse]].
 
   Using a [[RabbitSource$ RabbitSource]] with a [[MessagePublisherSink$ MessagePublisherSink]] is a great way to get persistent, recoverable streams.
 
