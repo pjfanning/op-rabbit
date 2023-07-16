@@ -164,7 +164,7 @@ trait Directives {
   def nack(requeue: Boolean = false): Handler = Ackable.nackHandler(requeue)
 
   /**
-    Extract the message body. Uses a [[com.spingo.op_rabbit.RabbitUnmarshaller RabbitUnmarshaller]] to deserialize.
+    Extract the message body. Uses a [[com.github.pjfanning.op_rabbit.RabbitUnmarshaller RabbitUnmarshaller]] to deserialize.
 
     Example:
 
@@ -201,14 +201,14 @@ trait Directives {
   }
 
   /**
-    Given a [[com.spingo.op_rabbit.properties property]], yields Some(value). If the underlying value does not exist (is null), then it yields None.
+    Given a [[com.github.pjfanning.op_rabbit.properties property]], yields Some(value). If the underlying value does not exist (is null), then it yields None.
     */
   def optionalProperty[T](extractor: PropertyExtractor[T]) = extract { delivery =>
     extractor.extract(delivery.properties)
   }
 
   /**
-    Given a [[com.spingo.op_rabbit.properties property]], yields it's value. If the underlying value does not exist (is null), then it nacks.
+    Given a [[com.github.pjfanning.op_rabbit.properties property]], yields it's value. If the underlying value does not exist (is null), then it nacks.
     */
   def property[T](extractor: PropertyExtractor[T]) = extractEither { delivery =>
     extractor.extract(delivery.properties) match {

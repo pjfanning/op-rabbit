@@ -104,7 +104,7 @@ private class MessagePublisherSink(rabbitControl: ActorRef, timeoutAfter: Finite
 
   Note - MessagePublisherSink uses ActorPublisher and due to PekkoStream limitations, it DOES NOT abide your configured supervisor strategy.
 
-  == [[com.spingo.op_rabbit.Message$.ConfirmResponse Message.ConfirmResponse]] handling ==
+  == [[com.github.pjfanning.op_rabbit.Message$.ConfirmResponse Message.ConfirmResponse]] handling ==
 
   After the sink publishes the [[Message]], it listens for the [[Message$.ConfirmResponse Message.ConfirmResponse]], and handles it accordingly:
 

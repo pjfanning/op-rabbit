@@ -63,9 +63,9 @@ private [op_rabbit] trait MessageExtractor[Out] {
 object RabbitSource {
   /**
     * @param rabbitControl Op-rabbit management ActorRef
-    * @param channelDirective An unbound [[http://spingo-oss.s3.amazonaws.com/docs/op-rabbit/core/current/index.html#com.spingo.op_rabbit.Directives@channel(qos:Int):com.spingo.op_rabbit.ChannelDirective ChannelDirective]]
-    * @param bindingDirective An unbound [[http://spingo-oss.s3.amazonaws.com/docs/op-rabbit/core/current/index.html#com.spingo.op_rabbit.Directives@consume(binding:com.spingo.op_rabbit.Binding):com.spingo.op_rabbit.BindingDirective BindingDirective]]; informs the stream from which queue it should pull messages.
-    * @param handler A [[http://spingo-oss.s3.amazonaws.com/docs/op-rabbit/core/current/index.html#com.spingo.op_rabbit.Directive Directive]], either simple or compound, describing how the elements passed into the stream are to be formed.
+    * @param channelDirective An unbound [[http://spingo-oss.s3.amazonaws.com/docs/op-rabbit/core/current/index.html#com.github.pjfanning.op_rabbit.Directives@channel(qos:Int):com.github.pjfanning.op_rabbit.ChannelDirective ChannelDirective]]
+    * @param bindingDirective An unbound [[http://spingo-oss.s3.amazonaws.com/docs/op-rabbit/core/current/index.html#com.github.pjfanning.op_rabbit.Directives@consume(binding:com.github.pjfanning.op_rabbit.Binding):com.github.pjfanning.op_rabbit.BindingDirective BindingDirective]]; informs the stream from which queue it should pull messages.
+    * @param handler A [[http://spingo-oss.s3.amazonaws.com/docs/op-rabbit/core/current/index.html#com.github.pjfanning.op_rabbit.Directive Directive]], either simple or compound, describing how the elements passed into the stream are to be formed.
     */
   def apply[L <: HList](
     rabbitControl: ActorRef,
