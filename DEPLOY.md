@@ -2,7 +2,7 @@
 
 - Edit README.md; note the appropriate stable version as appropriate.
 
-- Make sure when making changes to stable master, merge them into the corresponding release branches.
+- Make sure when making changes to stable main, merge them into the corresponding release branches.
 
 Run the following:
 
@@ -16,4 +16,4 @@ Run the following:
     git add README.md project/version.properties
     git commit -m v$version
     git tag v$version
-    git push origin v$version master
+    git push origin v$version main
