@@ -1,8 +1,8 @@
 import java.util.Properties
 
-val json4sVersion = "4.0.5"
-val circeVersion = "0.14.2"
-val pekkoVersion = "1.0.1"
+val json4sVersion = "4.0.7"
+val circeVersion = "0.14.6"
+val pekkoVersion = "1.0.2"
 val playVersion = "2.9.2"
 
 val appProperties = {
@@ -19,13 +19,13 @@ val commonSettings = Seq(
   scalaVersion := "2.13.12",
   crossScalaVersions := Seq("2.12.18", "2.13.12", "3.3.1"),
   libraryDependencies ++= Seq(
-    "com.chuusai" %%  "shapeless" % "2.3.9",
-    "com.typesafe" % "config" % "1.4.2",
+    "com.chuusai" %%  "shapeless" % "2.3.10",
+    "com.typesafe" % "config" % "1.4.3",
     "com.github.pjfanning" %% "pekko-rabbitmq" % "7.0.0",
-    "com.rabbitmq" % "amqp-client" % "5.18.0",
+    "com.rabbitmq" % "amqp-client" % "5.20.0",
     "org.slf4j" % "slf4j-api" % "1.7.36",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
-    "ch.qos.logback" % "logback-classic" % "1.2.12" % Test,
+    "ch.qos.logback" % "logback-classic" % "1.2.13" % Test,
     "org.scalatest" %% "scalatest" % "3.2.17" % Test,
     "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
     "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
