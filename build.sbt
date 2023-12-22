@@ -3,7 +3,7 @@ import java.util.Properties
 val json4sVersion = "4.0.7"
 val circeVersion = "0.14.6"
 val pekkoVersion = "1.0.2"
-val playVersion = "2.9.2"
+val playVersion = "3.0.1"
 
 val appProperties = {
   val prop = new Properties()
@@ -95,7 +95,7 @@ lazy val `play-json` = (project in file("./addons/play-json")).
   settings(commonSettings: _*).
   settings(
     name := "op-rabbit-play-json",
-    libraryDependencies += "com.typesafe.play" %% "play-json" % playVersion).
+    libraryDependencies += "org.playframework" %% "play-json" % playVersion).
   dependsOn(core)
 
 lazy val `spray-json` = (project in file("./addons/spray-json")).
