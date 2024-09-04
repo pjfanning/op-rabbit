@@ -1,9 +1,9 @@
 import java.util.Properties
 
 val json4sVersion = "4.0.7"
-val circeVersion = "0.14.6"
-val pekkoVersion = "1.0.2"
-val playVersion = "3.0.1"
+val circeVersion = "0.14.9"
+val pekkoVersion = "1.0.3"
+val playVersion = "3.0.4"
 
 val appProperties = {
   val prop = new Properties()
@@ -19,7 +19,7 @@ val commonSettings = Seq(
   scalaVersion := "2.13.14",
   crossScalaVersions := Seq("2.12.20", "2.13.14"),
   libraryDependencies ++= Seq(
-    "com.chuusai" %%  "shapeless" % "2.3.10",
+    "com.chuusai" %%  "shapeless" % "2.3.12",
     "com.typesafe" % "config" % "1.4.3",
     "com.github.pjfanning" %% "pekko-rabbitmq" % "7.0.0",
     "com.rabbitmq" % "amqp-client" % "5.21.0",
