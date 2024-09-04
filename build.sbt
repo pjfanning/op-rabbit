@@ -16,17 +16,17 @@ val assertNoApplicationConf = taskKey[Unit]("Makes sure application.conf isn't p
 val commonSettings = Seq(
   organization := "com.github.pjfanning",
   version := appProperties.getProperty("version"),
-  scalaVersion := "2.13.12",
-  crossScalaVersions := Seq("2.12.18", "2.13.12"),
+  scalaVersion := "2.13.14",
+  crossScalaVersions := Seq("2.12.20", "2.13.14"),
   libraryDependencies ++= Seq(
     "com.chuusai" %%  "shapeless" % "2.3.10",
     "com.typesafe" % "config" % "1.4.3",
     "com.github.pjfanning" %% "pekko-rabbitmq" % "7.0.0",
-    "com.rabbitmq" % "amqp-client" % "5.20.0",
+    "com.rabbitmq" % "amqp-client" % "5.21.0",
     "org.slf4j" % "slf4j-api" % "1.7.36",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
     "ch.qos.logback" % "logback-classic" % "1.2.13" % Test,
-    "org.scalatest" %% "scalatest" % "3.2.17" % Test,
+    "org.scalatest" %% "scalatest" % "3.2.19" % Test,
     "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
     "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
     "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion % Test
