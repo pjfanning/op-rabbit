@@ -22,7 +22,7 @@ val commonSettings = Seq(
     "com.chuusai" %%  "shapeless" % "2.3.12",
     "com.typesafe" % "config" % "1.4.3",
     "com.github.pjfanning" %% "pekko-rabbitmq" % "7.0.0",
-    "com.rabbitmq" % "amqp-client" % "5.21.0",
+    "com.rabbitmq" % "amqp-client" % "5.25.0",
     "org.slf4j" % "slf4j-api" % "1.7.36",
     "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
     "ch.qos.logback" % "logback-classic" % "1.2.13" % Test,
