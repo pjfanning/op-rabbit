@@ -2,7 +2,7 @@ import java.util.Properties
 
 val json4sVersion = "4.0.7"
 val circeVersion = "0.14.10"
-val pekkoVersion = "1.1.0"
+val pekkoVersion = "1.1.3"
 val playVersion = "3.0.4"
 
 val appProperties = {
