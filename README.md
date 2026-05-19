@@ -1,4 +1,4 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/op-rabbit_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/op-rabbit_2.13)
+![Maven Central Version](https://img.shields.io/maven-central/v/com.github.pjfanning/op-rabbit_2.13)
 
 # Op-Rabbit
 
