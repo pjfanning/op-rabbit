@@ -16,7 +16,7 @@ package com.github.pjfanning.op_rabbit
  * limitations under the License.
  */
 
-import shapeless._
+import com.github.pjfanning.op_rabbit.compat._
 
 /**
  * Provides a way to convert a value into an HList.
@@ -27,14 +27,14 @@ private [op_rabbit] trait HListable[T] {
   def apply(v: T): Out
 }
 private [op_rabbit] object HListable extends LowerPriorityHListable {
-  implicit def fromHList[T <: HList] = new HListable[T] {
+  implicit def fromHList[T <: HList]: HListable[T] { type Out = T } = new HListable[T] {
     type Out = T
     def apply(value: T) = value
   }
 }
 
 private[op_rabbit] abstract class LowerPriorityHListable {
-  implicit def fromAnyRef[T] = new HListable[T] {
+  implicit def fromAnyRef[T]: HListable[T] { type Out = T :: HNil } = new HListable[T] {
     type Out = T :: HNil
     def apply(value: T) = value :: HNil
   }

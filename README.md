@@ -28,6 +28,17 @@ libraryDependencies ++= Seq(
 )
 ```
 
+Op-Rabbit is built for Scala 2.12, 2.13 and 3.
+
+### Scala 3 notes
+
+* On Scala 2, the directive DSL is backed by [shapeless](https://github.com/milessabin/shapeless) HLists. Shapeless 2 is not
+  available for Scala 3, so on Scala 3 op-rabbit uses its own minimal HList (`com.github.pjfanning.op_rabbit.compat`).
+  Code that only uses the DSL does not need to change. If you refer to HList types directly, import them from
+  `com.github.pjfanning.op_rabbit.compat._` instead of `shapeless._`; that import works on Scala 2 as well.
+* Case class companion objects are not functions in Scala 3, so pass the `apply` method to `as`:
+  `(property(name) & property(age)).as(Person.apply _)` rather than `.as(Person)`.
+
 ## A high-level overview of the available components:
 
 - `op-rabbit-core`

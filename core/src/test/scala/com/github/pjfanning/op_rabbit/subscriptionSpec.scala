@@ -10,7 +10,7 @@ import scala.util.{Failure, Try}
 
 class SubscriptionSpec extends AnyFunSpec with Matchers with ScopedFixtures with RabbitTestHelpers {
 
-  implicit val executionContext = ExecutionContext.global
+  implicit val executionContext: ExecutionContext = ExecutionContext.global
   val queueName = s"test-queue-rabbit-control"
 
   trait RabbitFixtures {
@@ -18,7 +18,7 @@ class SubscriptionSpec extends AnyFunSpec with Matchers with ScopedFixtures with
 
   describe("Failed subscription") {
     it("propagates the exception via the initialized future") {
-      implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+      implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
       new RabbitFixtures {
         val s = Subscription.run(rabbitControl) {
           import Directives._
@@ -58,8 +58,8 @@ class SubscriptionSpec extends AnyFunSpec with Matchers with ScopedFixtures with
     //       val name = "test"
     //       var channels = Seq.empty[Channel]
     //       var unsubscribes = Seq.empty[Int]
-    //       val shutdownP = Promise[Unit]
-    //       val subscribedP = Promise[Unit]
+    //       val shutdownP = Promise[Unit]()
+    //       val subscribedP = Promise[Unit]()
     //       var counter = 0
 
     //       def props(queueName: String) = Props {

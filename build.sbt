@@ -16,21 +16,28 @@ val assertNoApplicationConf = taskKey[Unit]("Makes sure application.conf isn't p
 val commonSettings = Seq(
   organization := "com.github.pjfanning",
   version := appProperties.getProperty("version"),
-  scalaVersion := "2.13.16",
-  crossScalaVersions := Seq("2.12.20", "2.13.16"),
+  scalaVersion := "2.13.18",
+  crossScalaVersions := Seq("2.12.21", "2.13.18", "3.3.9"),
   libraryDependencies ++= Seq(
-    "com.chuusai" %%  "shapeless" % "2.3.12",
     "com.typesafe" % "config" % "1.4.3",
     "com.github.pjfanning" %% "pekko-rabbitmq" % "7.0.0",
     "com.rabbitmq" % "amqp-client" % "5.37.1",
     "org.slf4j" % "slf4j-api" % "1.7.36",
-    "com.spingo" %% "scoped-fixtures" % "2.0.0" % Test,
+    ("com.spingo" %% "scoped-fixtures" % "2.0.0" % Test)
+      .cross(CrossVersion.for3Use2_13)
+      .excludeAll(ExclusionRule("org.scalatest"), ExclusionRule("org.scalactic"), ExclusionRule("org.scala-lang.modules")),
     "ch.qos.logback" % "logback-classic" % "1.2.13" % Test,
     "org.scalatest" %% "scalatest" % "3.2.19" % Test,
     "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
     "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
     "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion % Test
   ),
+  libraryDependencies ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, _)) => Seq("com.chuusai" %% "shapeless" % "2.3.13")
+      case _ => Seq.empty
+    }
+  },
   publishMavenStyle := true,
   publishTo := {
     val nexus = "https://oss.sonatype.org/"

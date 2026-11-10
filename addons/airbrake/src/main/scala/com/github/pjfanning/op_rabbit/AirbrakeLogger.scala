@@ -59,7 +59,7 @@ class AirbrakeLogger(appName: String, airbrakeKey: String, environment: String) 
           "exchange"    -> envelope.getExchange,
           "routingKey"  -> envelope.getRoutingKey) ++ headerProperties))
 
-      environment(
+      this.environment(
         asJavaMap(Map(
           "host" -> java.net.InetAddress.getLocalHost.getHostName,
           "consumer" -> name)))

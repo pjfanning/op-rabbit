@@ -17,7 +17,7 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.util.{Failure, Try}
 
 class MessagePublisherSinkSpec extends AnyFunSpec with Matchers with ScopedFixtures with RabbitTestHelpers {
-  implicit val executionContext = ExecutionContext.global
+  implicit val executionContext: ExecutionContext = ExecutionContext.global
 
   val _queueName = ScopedFixture[String] { setter =>
     val name = s"test-queue-rabbit-control-${Math.random()}"
@@ -28,8 +28,8 @@ class MessagePublisherSinkSpec extends AnyFunSpec with Matchers with ScopedFixtu
   }
 
   trait RabbitFixtures {
-    val exceptionReported = Promise[Boolean]
-    implicit val errorReporting = new RabbitErrorLogging {
+    val exceptionReported = Promise[Boolean]()
+    implicit val errorReporting: RabbitErrorLogging = new RabbitErrorLogging {
       def apply(name: String, message: String, exception: Throwable, consumerTag: String, envelope: Envelope, properties: BasicProperties, body: Array[Byte]): Unit = {
         exceptionReported.success(true)
       }
@@ -43,7 +43,7 @@ class MessagePublisherSinkSpec extends AnyFunSpec with Matchers with ScopedFixtu
   describe("PublisherSink") {
     it("publishes all messages consumed, and acknowledges the promises") {
       new RabbitFixtures {
-        implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+        implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
 
         val (subscription, consumed) = RabbitSource(
           rabbitControl,
@@ -55,11 +55,11 @@ class MessagePublisherSinkSpec extends AnyFunSpec with Matchers with ScopedFixtu
           toMat(Sink.fold(List.empty[Int]) {
             case (acc, v) =>
               acc ++ List(v)
-          })(Keep.both).run
+          })(Keep.both).run()
 
         await(subscription.initialized)
 
-        val data = range map { i => (Promise[Unit], i) }
+        val data = range map { i => (Promise[Unit](), i) }
 
         val published = AckedSource(data).
           map(Message.queue(_, queueName)).
@@ -76,7 +76,7 @@ class MessagePublisherSinkSpec extends AnyFunSpec with Matchers with ScopedFixtu
         val factory = Message.factory(Publisher.queue(Queue.passive("no-existe")))
         val sink = MessagePublisherSink(rabbitControl)
 
-        val data = range map { i => (Promise[Unit], i) }
+        val data = range map { i => (Promise[Unit](), i) }
 
         val published = AckedSource(data).
           map(Message(_, Publisher.queue(Queue.passive("no-existe")))).

@@ -1,7 +1,7 @@
 package com.github.pjfanning
 
 import scala.concurrent.{Promise,Future}
-import shapeless._
+import com.github.pjfanning.op_rabbit.compat._
 
 package object op_rabbit {
   type Handler = (Promise[ReceiveResult], Delivery) => Unit

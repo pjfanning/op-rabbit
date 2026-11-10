@@ -16,7 +16,7 @@
 
 package com.github.pjfanning.op_rabbit
 
-import shapeless._
+import com.github.pjfanning.op_rabbit.compat._
 
 private [op_rabbit] abstract class HListToValueOrTupleInstances {
   type Aux[L <: HList, Out0] = HListToValueOrTuple[L] { type Out = Out0 }

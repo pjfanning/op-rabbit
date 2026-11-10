@@ -28,7 +28,7 @@ class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with
 
   trait RabbitFixtures {
     implicit val executionContext: ExecutionContext = ExecutionContext.global
-    val exceptionReported = Promise[Boolean]
+    val exceptionReported = Promise[Boolean]()
     implicit val errorReporting: RabbitErrorLogging = new RabbitErrorLogging {
       def apply(name: String, message: String, exception: Throwable, consumerTag: String, envelope: Envelope, properties: BasicProperties, body: Array[Byte]): Unit = {
         exceptionReported.trySuccess(true)
@@ -49,11 +49,11 @@ class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with
   describe("streaming from rabbitMq") {
     it("subscribes to a stream of events and shuts down sanely") {
       new RabbitFixtures {
-        lazy val promises = range map (_ => Promise[Unit])
+        lazy val promises = range map (_ => Promise[Unit]())
         val (subscription, result) = source.
           map { i => promises(i).success(()); i }.
           acked.
-          toMat(Sink.fold(0)(_ + _))(Keep.both).run
+          toMat(Sink.fold(0)(_ + _))(Keep.both).run()
 
         await(subscription.initialized)
         (range) foreach { i => rabbitControl ! Message.queue(i, queueName()) }
@@ -90,8 +90,8 @@ class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with
     it("recovers from connection interruptions by replaying unacked messages") {
       new RabbitFixtures {
         try {
-          var delivered = range map { _ => Promise[Unit] }
-          var floodgate = Promise[Unit]
+          var delivered = range map { _ => Promise[Unit]() }
+          var floodgate = Promise[Unit]()
 
           val (subscription, result) = source.
             mapAsync(qos) { i =>
@@ -106,7 +106,7 @@ class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with
           await(Future.sequence( delivered.take(8).map(_.future)))
           // we should get up to 8 delivered
 
-          delivered = range map { _ => Promise[Unit] }
+          delivered = range map { _ => Promise[Unit]() }
 
           reconnect(rabbitControl)
 
@@ -132,7 +132,7 @@ class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with
     it("doesn't stop the subscription if the stream resumes and recovery strategy is defined") {
       new RabbitFixtures {
         override val qos = 1
-        override implicit val recoveryStrategy = RecoveryStrategy.nack(requeue = false)
+        override implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.nack(requeue = false)
 
         val (subscription, result) = source.take(range.length.toLong).
           map { n =>
@@ -144,7 +144,7 @@ class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with
           acked.
           toMat(Sink.fold(List.empty[Int])(_ :+ _))(Keep.both).
           withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider)).
-          run
+          run()
 
         await(subscription.initialized)
         range foreach { i => rabbitControl ! Message.queue(i, queueName()) }
@@ -155,7 +155,7 @@ class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with
         val (subscription2, result2) = source.take(1).
           acked.
           toMat(Sink.head)(Keep.both).
-          run
+          run()
 
         await(subscription2.initialized)
         rabbitControl ! Message.queue(99, queueName())
@@ -208,7 +208,7 @@ class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with
       (0 to 1) foreach { time =>
         new RabbitFixtures {
           override lazy val binding = queue(queueName(), durable = false, exclusive = false, autoDelete = true)
-          val promises = range map { i => Promise[Unit]}
+          val promises = range map { i => Promise[Unit]()}
           val (subscription, result) = source.
             map(promises(_).success(())).
             runAckMat(Keep.both)

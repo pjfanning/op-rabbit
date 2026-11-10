@@ -19,7 +19,7 @@
 
 package com.github.pjfanning.op_rabbit
 
-import shapeless._
+import com.github.pjfanning.op_rabbit.compat._
 import scala.language.implicitConversions
 
 private [op_rabbit] trait HListDeserializer[L <: HList, T] extends Deserializer[L, T] {
@@ -28,7 +28,7 @@ private [op_rabbit] trait HListDeserializer[L <: HList, T] extends Deserializer[
 private [op_rabbit] object HListDeserializer extends HListDeserializerInstances {
   protected type DS[A, AA] = Deserializer[A, AA] // alias for brevity
 
-  implicit def holderToHList[L <: HList, T](holder: TypeHolder[T])(implicit hv: HListDeserializer[L, T]) = hv
+  implicit def holderToHList[L <: HList, T](holder: TypeHolder[T])(implicit hv: HListDeserializer[L, T]): HListDeserializer[L, T] = hv
 
   /////////////////////////////// CASE CLASS DESERIALIZATION ////////////////////////////////
 

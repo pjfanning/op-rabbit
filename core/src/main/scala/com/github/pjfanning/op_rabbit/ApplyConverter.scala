@@ -16,7 +16,7 @@
 
 package com.github.pjfanning.op_rabbit
 
-import shapeless._
+import com.github.pjfanning.op_rabbit.compat._
 
 private [op_rabbit] abstract class ApplyConverter[L <: HList] {
   type In

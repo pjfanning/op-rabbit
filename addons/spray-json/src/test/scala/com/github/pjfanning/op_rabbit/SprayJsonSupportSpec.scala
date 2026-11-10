@@ -6,7 +6,7 @@ import spray.json.DefaultJsonProtocol
 
 class SprayJsonSupportSpec extends AnyFunSpec with Matchers with DefaultJsonProtocol {
   case class Thing(a: Int)
-  implicit val thingFormat = jsonFormat1(Thing)
+  implicit val thingFormat: spray.json.RootJsonFormat[Thing] = jsonFormat1(Thing.apply)
   import SprayJsonSupport._
   val u = implicitly[RabbitUnmarshaller[Thing]]
   val m = implicitly[RabbitMarshaller[Thing]]

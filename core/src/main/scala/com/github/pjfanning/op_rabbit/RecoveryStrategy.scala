@@ -41,10 +41,10 @@ object RecoveryStrategy {
   val `x-original-exchange` = properties.TypedHeader[String]("x-original-exchange")
 
   /** directive which extracts the x-original-routing-key, if present. Falls back to envelope routing key. */
-  val originalRoutingKey = (property(`x-original-routing-key`) | routingKey)
+  val originalRoutingKey: Directive1[String] = (property(`x-original-routing-key`) | routingKey)
 
   /** directive which extracts the x-original-exchange, if present. Falls back to envelope exchange. */
-  val originalExchange = (property(`x-original-exchange`) | dExchange)
+  val originalExchange: Directive1[String] = (property(`x-original-exchange`) | dExchange)
 
   /** Header at which the formatted exception is stored. */
   val `x-exception` = properties.TypedHeader[String]("x-exception")
@@ -163,7 +163,7 @@ object RecoveryStrategy {
               `x-dead-letter-routing-key`(queueName)) ++ retryQueueProperties)),
         exchange)
 
-    private val getRetryCount = (property(`x-retry`) | Directives.provide(0))
+    private val getRetryCount: Directive1[Int] = (property(`x-retry`) | Directives.provide(0))
     def apply(queueName: String, channel: Channel, ex: Throwable): Handler = {
       getRetryCount {
         case (thisRetryCount) if (thisRetryCount < retryCount) =>

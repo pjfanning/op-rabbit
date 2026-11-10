@@ -20,7 +20,7 @@ class DirectivesSpec extends AnyFunSpec with Matchers with Inside {
   import com.github.pjfanning.op_rabbit.properties._
 
   def resultFor(delivery: Delivery)(handler: Handler) = {
-    val handled = Promise[ReceiveResult]
+    val handled = Promise[ReceiveResult]()
     handler(handled, delivery)
     await(handled.future)
   }
@@ -76,7 +76,7 @@ class DirectivesSpec extends AnyFunSpec with Matchers with Inside {
     it("extracts typed headers") {
       case class VeryPerson(name: String, age: Int)
       resultFor(testDelivery(properties = Seq(Header("name", "Scratch"), Header("age", 27)))) {
-        (property(TypedHeader[String]("name")) & property(TypedHeader[Int]("age"))).as(VeryPerson) { person =>
+        (property(TypedHeader[String]("name")) & property(TypedHeader[Int]("age"))).as(VeryPerson.apply _) { person =>
           person should be (VeryPerson("Scratch", 27))
           ack
         }
@@ -90,7 +90,7 @@ class DirectivesSpec extends AnyFunSpec with Matchers with Inside {
       resultFor(testDelivery()) {
         case class LosContainer(a:Int, name: String, b:Option[Int]) {}
 
-        (provide(1) & provide("name") & provide(2)).as(LosContainer) { container =>
+        (provide(1) & provide("name") & provide(2)).as(LosContainer.apply _) { container =>
           container should be (LosContainer(1, "name", Some(2)))
           println(container)
           ack

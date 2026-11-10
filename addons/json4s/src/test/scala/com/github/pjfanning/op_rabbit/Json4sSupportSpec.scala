@@ -7,7 +7,7 @@ case class Thing(a: Int)
 
 class Json4sSupportSpec extends AnyFunSpec with Matchers {
   import Json4sSupport.native._
-  implicit val formats = org.json4s.DefaultFormats
+  implicit val formats: org.json4s.Formats = org.json4s.DefaultFormats
   val u = implicitly[RabbitUnmarshaller[Thing]]
   val m = implicitly[RabbitMarshaller[Thing]]
 

@@ -16,12 +16,12 @@
 
 package com.github.pjfanning.op_rabbit
 
-import shapeless._
+import com.github.pjfanning.op_rabbit.compat._
 
 private [op_rabbit] abstract class HListDeserializerInstances { self: HListDeserializer.type =>
 [#  implicit def hld1[Z, [#T1, R1#]]
       (construct: ([#R1#]) => Z)
-      (implicit [#q1: DS[T1, R1]#]) =
+      (implicit [#q1: DS[T1, R1]#]): HListDeserializer[[#T1# :: ] :: HNil, Z] =
     create[[#T1# :: ] :: HNil, Z] {
       case [#t1# :: ] :: HNil => construct(
         [#get(q1(t1))#,

@@ -21,7 +21,7 @@ class RabbitControlSpec extends AnyFunSpec with ScopedFixtures with Matchers wit
 
   trait RabbitFixtures {
     val queueName = _queueName()
-    implicit val executionContext = ExecutionContext.global
+    implicit val executionContext: ExecutionContext = ExecutionContext.global
     val rabbitControl = rabbitControlFixture()
   }
 
@@ -29,9 +29,9 @@ class RabbitControlSpec extends AnyFunSpec with ScopedFixtures with Matchers wit
     it("unsubscribes all subscriptions") {
       new RabbitFixtures {
         import RabbitControl._
-        implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+        implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
         var count = 0
-        val promises = (0 to 2).map { i => Promise[Int] }.toList
+        val promises = (0 to 2).map { i => Promise[Int]() }.toList
 
         val subscription = Subscription.run(rabbitControl) {
           import Directives._
@@ -76,7 +76,7 @@ class RabbitControlSpec extends AnyFunSpec with ScopedFixtures with Matchers wit
 
   describe("Message publication") {
     it("responds with Ack(msg.id) on delivery confirmation") {
-      implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+      implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
       new RabbitFixtures {
         val subscription = Subscription.run(rabbitControl) {
           import Directives._
@@ -95,7 +95,7 @@ class RabbitControlSpec extends AnyFunSpec with ScopedFixtures with Matchers wit
     }
 
     it("handles connection interruption without dropping messages") {
-      implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+      implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
       new RabbitFixtures {
         val doneConfirm = Promise[Set[Int]]
         val doneReceive = Promise[Set[Int]]
@@ -104,12 +104,12 @@ class RabbitControlSpec extends AnyFunSpec with ScopedFixtures with Matchers wit
           var received = Set.empty[Int]
           var confirmed = Set.empty[Int]
           def receive = {
-            case ('confirm, n: Int) =>
+            case (Symbol("confirm"), n: Int) =>
               println(s"Counter: confirm $n")
               confirmed = confirmed + n
               if (n == -1)
                 doneConfirm.trySuccess(confirmed)
-            case ('receive, n: Int) =>
+            case (Symbol("receive"), n: Int) =>
               println(s"Counter: receive $n")
               received = received + n
               if (n == -1)
@@ -123,7 +123,7 @@ class RabbitControlSpec extends AnyFunSpec with ScopedFixtures with Matchers wit
             consume(queue(queueName, durable = true, exclusive = false)) {
               body(as[Int]) { i =>
                 println(s"Consumer received $i")
-                counter ! (('receive, i))
+                counter ! ((Symbol("receive"), i))
                 ack
               }
             }
@@ -135,14 +135,14 @@ class RabbitControlSpec extends AnyFunSpec with ScopedFixtures with Matchers wit
           val factory = Message.factory(Publisher.queue(queueName))
           var i = 0
           override def preStart(): Unit = {
-            context.system.scheduler.schedule(0.seconds, 5.millis, self, 'beat)
+            context.system.scheduler.schedule(0.seconds, 5.millis, self, Symbol("beat"))
           }
 
           def receive = {
-            case 'beat if i == 40 =>
+            case Symbol("beat") if i == 40 =>
               doSend(-1)
               context.stop(self)
-            case 'beat =>
+            case Symbol("beat") =>
               i = i + 1
               if (i == 20)
                 Future { reconnect(rabbitControl) }
@@ -151,7 +151,7 @@ class RabbitControlSpec extends AnyFunSpec with ScopedFixtures with Matchers wit
 
           def doSend(n: Int): Unit = {
             (rabbitControl ? factory(n)) foreach { case m: Message.Ack =>
-              counter ! (('confirm, n))
+              counter ! ((Symbol("confirm"), n))
             }
           }
         }))
@@ -175,7 +175,7 @@ class RabbitControlSpec extends AnyFunSpec with ScopedFixtures with Matchers wit
     }
 
     it("overcomes channel-closes resulting in routing messages to non-existent exchanges") {
-      implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+      implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
       new RabbitFixtures {
 
         Subscription.run(rabbitControl) {

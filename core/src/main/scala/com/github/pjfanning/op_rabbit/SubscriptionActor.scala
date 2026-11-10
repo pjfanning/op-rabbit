@@ -36,29 +36,29 @@ private [op_rabbit] class SubscriptionActor(
       }
 
     case Event(Pause | Run | Stop(_,_), p: DisconnectedPayload) if p.nextState.isTerminal =>
-      stay
+      stay()
 
     case Event(Pause, p: DisconnectedPayload) =>
-      stay using p.copy(nextState = Paused)
+      stay() using p.copy(nextState = Paused)
 
     case Event(Run, p: DisconnectedPayload) =>
-      stay using p.copy(nextState = Binding)
+      stay() using p.copy(nextState = Binding)
 
     case Event(Stop(cause, timeout), p: DisconnectedPayload) =>
-      stay using p.copy(nextState = Stopping, shutdownCause = cause)
+      stay() using p.copy(nextState = Stopping, shutdownCause = cause)
 
     case Event(Abort(cause), p: DisconnectedPayload) =>
-      stay using p.copy(nextState = Stopped, shutdownCause = p.shutdownCause orElse cause)
+      stay() using p.copy(nextState = Stopped, shutdownCause = p.shutdownCause orElse cause)
 
     case Event(Subscription.SetQos(qos), p: DisconnectedPayload) =>
-      stay using p.copy(qos = qos)
+      stay() using p.copy(qos = qos)
   }
 
   when(Running) {
     case Event(ChannelConnected(channel, _), info: ConnectedPayload) =>
       goto(Binding) using info.copy(channel = channel)
     case Event(Run, _) =>
-      stay
+      stay()
     case Event(Pause, _) =>
       goto(Paused)
   }
@@ -67,7 +67,7 @@ private [op_rabbit] class SubscriptionActor(
     case Event(ChannelConnected(channel, _), info: ConnectedPayload) =>
       goto(Binding) using info.copy(channel = channel)
     case Event(Run, _) =>
-      stay
+      stay()
     case Event(Pause, _) =>
       goto(Paused)
     case Event(BindSuccess(channel), info: ConnectedPayload) =>
@@ -75,10 +75,10 @@ private [op_rabbit] class SubscriptionActor(
         goto(Running)
       else
         // we received two channels while in the Binding state. Ignore the first result.
-        stay
+        stay()
     case Event(BindFailure(channel, ex), info: ConnectedPayload) =>
       if (info.channel != channel) {
-        stay // We received two channels while in the Binding state. Ignore the old first result.
+        stay() // We received two channels while in the Binding state. Ignore the old first result.
       } else if (channel.isOpen()) { // if the channel is still open, then this error is non-recoverable. Fail hard.
         initialized.tryFailure(ex)
         /* propagate exception to closed future as well, as it's
@@ -98,13 +98,13 @@ private [op_rabbit] class SubscriptionActor(
           "Waiting in anticipating of a new channel.",
           subscription.consumer.queue.queueName)
         /* When we receive another ChannelConnected message the binding will be tried again */
-        stay
+        stay()
       }
   }
 
   when(Paused) {
     case Event(Pause, _) =>
-      stay
+      stay()
     case Event(Run, _) =>
       goto(Binding)
   }
@@ -112,27 +112,27 @@ private [op_rabbit] class SubscriptionActor(
   // Waiting for consumer actor to stop
   when(Stopping) {
     case Event(Pause | Run | Stop(_, _), _) =>
-      stay
+      stay()
   }
 
   when(Stopped) {
-    case _ => stay
+    case _ => stay()
   }
 
   whenUnhandled {
     case Event(BindSuccess, _) => // ignore
-      stay
+      stay()
 
     case Event(ex: BindFailure, _) => // ignore
-      stay
+      stay()
 
     case Event(ChannelConnected(channel, channelActor), c: ConnectedPayload) =>
-      stay using c.copy(channel = channel, channelActor = channelActor)
+      stay() using c.copy(channel = channel, channelActor = channelActor)
 
     case Event(msg @ Subscription.SetQos(qos), c: ConnectedPayload) =>
       // TODO - Forward to the implementation actor. Send qos as part of Subscribe message.
       c.consumer.foreach(_ ! msg)
-      stay using c.copy(qos = qos)
+      stay() using c.copy(qos = qos)
 
     case Event(Terminated(actor), payload: ConnectedPayload) if payload.consumer == Some(actor) =>
       goto(Stopped) using payload.copy(consumer = None)
@@ -149,11 +149,11 @@ private [op_rabbit] class SubscriptionActor(
       goto(Stopping) using payload.copyCommon(shutdownCause = payload.shutdownCause orElse cause)
 
     case Event(c: ChannelCreated, _) =>
-      stay
+      stay()
 
     case Event(e, s) =>
       log.error("received unhandled request {} in state {}/{}", e, stateName, s)
-      stay
+      stay()
   }
 
   onTransition {

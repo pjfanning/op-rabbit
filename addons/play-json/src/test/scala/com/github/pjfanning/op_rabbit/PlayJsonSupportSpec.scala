@@ -6,7 +6,7 @@ import play.api.libs.json._
 
 class PlayJsonSupportSpec extends AnyFunSpec with Matchers {
   case class Thing(a: Int)
-  implicit val thingFormat = Json.format[Thing]
+  implicit val thingFormat: OFormat[Thing] = Json.format[Thing]
   import PlayJsonSupport._
   val u = implicitly[RabbitUnmarshaller[Thing]]
   val m = implicitly[RabbitMarshaller[Thing]]
