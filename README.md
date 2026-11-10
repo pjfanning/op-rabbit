@@ -28,7 +28,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-Op-Rabbit is built for Scala 2.12, 2.13 and 3.
+Op-Rabbit is built for Scala 2.13 and 3, and requires Java 17 or later (Pekko 2 requirements).
 
 ### Scala 3 notes
 

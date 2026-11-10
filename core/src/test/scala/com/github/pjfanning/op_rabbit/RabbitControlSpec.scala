@@ -135,7 +135,7 @@ class RabbitControlSpec extends AnyFunSpec with ScopedFixtures with Matchers wit
           val factory = Message.factory(Publisher.queue(queueName))
           var i = 0
           override def preStart(): Unit = {
-            context.system.scheduler.schedule(0.seconds, 5.millis, self, Symbol("beat"))
+            context.system.scheduler.scheduleWithFixedDelay(0.seconds, 5.millis, self, Symbol("beat"))
           }
 
           def receive = {

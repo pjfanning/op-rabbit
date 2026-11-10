@@ -2,7 +2,7 @@ import java.util.Properties
 
 val json4sVersion = "4.0.7"
 val circeVersion = "0.14.10"
-val pekkoVersion = "1.1.3"
+val pekkoVersion = "2.0.0"
 val playVersion = "3.0.4"
 
 val appProperties = {
@@ -17,10 +17,10 @@ val commonSettings = Seq(
   organization := "com.github.pjfanning",
   version := appProperties.getProperty("version"),
   scalaVersion := "2.13.18",
-  crossScalaVersions := Seq("2.12.21", "2.13.18", "3.3.9"),
+  crossScalaVersions := Seq("2.13.18", "3.3.9"),
   libraryDependencies ++= Seq(
     "com.typesafe" % "config" % "1.4.3",
-    "com.github.pjfanning" %% "pekko-rabbitmq" % "7.0.0",
+    "com.github.pjfanning" %% "pekko-rabbitmq" % "9.0.0",
     "com.rabbitmq" % "amqp-client" % "5.37.1",
     "org.slf4j" % "slf4j-api" % "1.7.36",
     ("com.spingo" %% "scoped-fixtures" % "2.0.0" % Test)
@@ -126,6 +126,8 @@ lazy val `pekko-stream` = (project in file("./addons/pekko-stream")).
     libraryDependencies ++= Seq(
       "com.github.pjfanning" %% "acked-streams" % "1.0.1",
       "org.apache.pekko" %% "pekko-stream" % pekkoVersion),
+    // TODO: remove once acked-streams is released against Pekko 2 (acked-streams 1.0.1 depends on pekko-stream 1.0.1)
+    libraryDependencySchemes += "org.apache.pekko" %% "pekko-stream" % VersionScheme.Always,
     Test / unmanagedResourceDirectories ++= Seq(
       file(".").getAbsoluteFile / "core" / "src" / "test" / "resources"),
     Test / unmanagedSourceDirectories ++= Seq(
