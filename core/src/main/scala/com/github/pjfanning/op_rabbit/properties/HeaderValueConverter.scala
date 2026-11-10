@@ -127,8 +127,8 @@ object FromHeaderValue {
   }
 
   case class SeqFromHeaderValue[T](charset: Charset = Charset.defaultCharset)(implicit subConverter: FromHeaderValue[T]) extends FromHeaderValue[Seq[T]] {
-    implicit val subManifest = subConverter.manifest
-    val manifest = implicitly[Manifest[Seq[T]]]
+    implicit val subManifest: Manifest[T] = subConverter.manifest
+    val manifest: Manifest[Seq[T]] = scala.reflect.ManifestFactory.classType(classOf[Seq[T]], subManifest)
     def apply(hv: HeaderValue): Either[HeaderValueConversionException, Seq[T]] = hv match {
       case SeqHeaderValue(seq) => {
         val builder = Seq.newBuilder[T]
@@ -138,7 +138,7 @@ object FromHeaderValue {
             case Left(ex) => return Left(HeaderValueConversionException("One or more elements could not be converted", ex))
           })
         }
-        Right(builder.result)
+        Right(builder.result())
       }
       case _ =>
         Left(HeaderValueConversionException("${hv} is not a Seq"))
@@ -146,8 +146,8 @@ object FromHeaderValue {
   }
 
   case class MapFromHeaderValue[T](charset: Charset = Charset.defaultCharset)(implicit subConverter: FromHeaderValue[T]) extends FromHeaderValue[Map[String, T]] {
-    implicit val subManifest = subConverter.manifest
-    val manifest = implicitly[Manifest[Map[String, T]]]
+    implicit val subManifest: Manifest[T] = subConverter.manifest
+    val manifest: Manifest[Map[String, T]] = scala.reflect.ManifestFactory.classType(classOf[Map[String, T]], implicitly[Manifest[String]], subManifest)
     def apply(hv: HeaderValue): Either[HeaderValueConversionException, Map[String, T]] = hv match {
       case MapHeaderValue(map) => {
         val builder = Map.newBuilder[String, T]
@@ -157,7 +157,7 @@ object FromHeaderValue {
             case Left(ex) => return Left(HeaderValueConversionException("One or more elements could not be converted", ex))
           })
         }
-        Right(builder.result)
+        Right(builder.result())
       }
       case _ =>
         Left(HeaderValueConversionException("${hv} is not a Map"))
@@ -176,14 +176,14 @@ object FromHeaderValue {
     }
   }
 
-  implicit val booleanHeaderConversion = BooleanFromHeaderValue()
-  implicit val defaultStringConversion = StringFromHeaderValue()
-  implicit val defaultByteConversion = ByteFromHeaderValue()
-  implicit val defaultIntConversion = IntFromHeaderValue()
-  implicit val defaultDoubleConversion = DoubleFromHeaderValue()
-  implicit val defaultLongConversion = LongFromHeaderValue()
-  implicit val defaultFloatConversion = FloatFromHeaderValue()
-  implicit val defaultBigDecimalConversion = BigDecimalFromHeaderValue()
-  implicit def defaultSeqFromHeaderValue[T](implicit subConverter: FromHeaderValue[T]) = SeqFromHeaderValue[T]()
-  implicit def defaultMapFromHeaderValue[T](implicit subConverter: FromHeaderValue[T]) = MapFromHeaderValue[T]()
+  implicit val booleanHeaderConversion: BooleanFromHeaderValue = BooleanFromHeaderValue()
+  implicit val defaultStringConversion: StringFromHeaderValue = StringFromHeaderValue()
+  implicit val defaultByteConversion: ByteFromHeaderValue = ByteFromHeaderValue()
+  implicit val defaultIntConversion: IntFromHeaderValue = IntFromHeaderValue()
+  implicit val defaultDoubleConversion: DoubleFromHeaderValue = DoubleFromHeaderValue()
+  implicit val defaultLongConversion: LongFromHeaderValue = LongFromHeaderValue()
+  implicit val defaultFloatConversion: FloatFromHeaderValue = FloatFromHeaderValue()
+  implicit val defaultBigDecimalConversion: BigDecimalFromHeaderValue = BigDecimalFromHeaderValue()
+  implicit def defaultSeqFromHeaderValue[T](implicit subConverter: FromHeaderValue[T]): SeqFromHeaderValue[T] = SeqFromHeaderValue[T]()
+  implicit def defaultMapFromHeaderValue[T](implicit subConverter: FromHeaderValue[T]): MapFromHeaderValue[T] = MapFromHeaderValue[T]()
 }

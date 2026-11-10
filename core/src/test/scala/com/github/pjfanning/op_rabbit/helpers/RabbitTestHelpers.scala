@@ -15,7 +15,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 trait RabbitTestHelpers extends ScopedFixtures {
-  implicit val timeout = Timeout(5 seconds)
+  implicit val timeout: Timeout = Timeout(5 seconds)
   val killConnection = new MessageForPublicationLike {
     val dropIfNoChannel = true
     def apply(c: Channel): Unit = {
@@ -30,10 +30,10 @@ trait RabbitTestHelpers extends ScopedFixtures {
     status
   }
   val rabbitControlFixture = LazyFixture[ActorRef] {
-    actorSystemFixture().actorOf(Props[RabbitControl])
+    actorSystemFixture().actorOf(Props[RabbitControl]())
   }
 
-  implicit def actorSystem = actorSystemFixture()
+  implicit def actorSystem: ActorSystem = actorSystemFixture()
   def rabbitControl = rabbitControlFixture()
   def await[T](f: Future[T], duration: Duration = timeout.duration) =
     Await.result(f, duration)
@@ -43,7 +43,7 @@ trait RabbitTestHelpers extends ScopedFixtures {
   def reconnect(rabbitMqControl: ActorRef)(implicit actorSystem: ActorSystem): Unit = {
     val connectionActor = await((rabbitMqControl ? RabbitControl.GetConnectionActor).mapTo[ActorRef])
 
-    val done = Promise[Unit]
+    val done = Promise[Unit]()
     actorSystem.actorOf(Props(new Actor {
       import org.apache.pekko.actor.FSM._
       override def preStart(): Unit = {
@@ -63,7 +63,7 @@ trait RabbitTestHelpers extends ScopedFixtures {
               connectionActor ! com.github.pjfanning.pekko.rabbitmq.ConnectionActor.Connect
               context.become {
                 case Transition(ref, from, to) if from.toString == "Disconnected" && to.toString == "Connected" =>
-                  done.success()
+                  done.success(())
                   context stop self
               }
           }
@@ -79,7 +79,7 @@ trait RabbitTestHelpers extends ScopedFixtures {
     await(deleteQueue.processed)
   }
 
-  implicit val simpleIntMarshaller = new RabbitMarshaller[Int] with RabbitUnmarshaller[Int] {
+  implicit val simpleIntMarshaller: RabbitMarshaller[Int] with RabbitUnmarshaller[Int] = new RabbitMarshaller[Int] with RabbitUnmarshaller[Int] {
     val contentType = "text/plain"
     val contentEncoding = Some("UTF-8")
 

@@ -6,7 +6,7 @@ import scala.language.implicitConversions
 trait Deserializer[A, B] extends (A => Deserialized[B]) {}
 object Deserializer extends DeserializerLowerPriorityImplicits {
 
-  implicit def fromFunction2Converter[A, B](implicit f: A ⇒ B) =
+  implicit def fromFunction2Converter[A, B](implicit f: A ⇒ B): Deserializer[A, B] =
     new Deserializer[A, B] {
       def apply(a: A) = {
         try Right(f(a))
@@ -16,7 +16,7 @@ object Deserializer extends DeserializerLowerPriorityImplicits {
       }
     }
 
-  implicit def liftToTargetOption[A, B](implicit converter: Deserializer[A, B]) =
+  implicit def liftToTargetOption[A, B](implicit converter: Deserializer[A, B]): Deserializer[A, Option[B]] =
     new Deserializer[A, Option[B]] {
       def apply(value: A) = converter(value) match {
         case Right(a)              ⇒ Right(Some(a))
@@ -27,8 +27,8 @@ object Deserializer extends DeserializerLowerPriorityImplicits {
 }
 
 private[op_rabbit] abstract class DeserializerLowerPriorityImplicits {
-  implicit def lift2SourceOption[A, B](converter: Deserializer[A, B]) = liftToSourceOption(converter)
-  implicit def liftToSourceOption[A, B](implicit converter: Deserializer[A, B]) = {
+  implicit def lift2SourceOption[A, B](converter: Deserializer[A, B]): Deserializer[Option[A], B] = liftToSourceOption(converter)
+  implicit def liftToSourceOption[A, B](implicit converter: Deserializer[A, B]): Deserializer[Option[A], B] = {
     new Deserializer[Option[A], B] {
       def apply(value: Option[A]) = value match {
         case Some(a) ⇒ converter(a)

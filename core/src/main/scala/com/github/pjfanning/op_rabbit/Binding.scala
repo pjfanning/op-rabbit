@@ -30,8 +30,7 @@ object Binding {
   def direct(
     queue: QueueDefinition[Concrete],
     exchange:
-        ExchangeDefinition[Concreteness] with
-        Exchange[Exchange.Direct.type],
+        ExchangeDefinition[Concreteness] with Exchange[Exchange.Direct.type],
     routingKeys: List[String] = Nil
   ): Binding = new Binding {
     val queueName = queue.queueName
@@ -68,8 +67,7 @@ object Binding {
     queue: QueueDefinition[Concrete],
     topics: Seq[String],
     exchange:
-        ExchangeDefinition[Concrete] with
-        Exchange[Exchange.Topic.type] =
+        ExchangeDefinition[Concrete] with Exchange[Exchange.Topic.type] =
       Exchange.topic(RabbitControl.topicExchangeName)
   ): Binding = new Binding {
     val queueName = queue.queueName

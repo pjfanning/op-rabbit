@@ -18,7 +18,7 @@ sealed trait HeaderValue {
 
   def asOpt[T](implicit conversion: FromHeaderValue[T]): Option[T] = conversion(this).right.toOption
 }
-object HeaderValue {
+object HeaderValue extends HeaderValueConversions {
   case class LongStringHeaderValue(value: LongString) extends HeaderValue {
     def serializable = value
     override def asString(sourceCharset: Charset) =
@@ -33,7 +33,7 @@ object HeaderValue {
     def serializable = value.asInstanceOf[Integer]
   }
   case class BigDecimalHeaderValue(value: BigDecimal) extends HeaderValue {
-    val serializable = value.bigDecimal
+    val serializable: java.math.BigDecimal = value.bigDecimal
     if (serializable.unscaledValue.bitLength() > 32)
       throw new IllegalArgumentException("BigDecimal too large to be encoded")
   }

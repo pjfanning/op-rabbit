@@ -7,7 +7,7 @@ import org.apache.pekko.stream.scaladsl.Source
 import com.github.pjfanning.acked.{AckedSource, AckTup}
 import scala.concurrent.{ExecutionContext, Promise}
 import scala.util.{Failure,Success}
-import shapeless._
+import com.github.pjfanning.op_rabbit.compat._
 import scala.concurrent.duration._
 
 private [op_rabbit] case class StreamException(e: Throwable)
@@ -32,7 +32,7 @@ private [op_rabbit] trait MessageExtractor[Out] {
   * the incoming RabbitMQ message to be acknowledged.
   *
   * If you begin constructing your own Acked components and interacting with the
-  * `AckTup[T]` type directly (or, `(Promise[Unit], T)`), you must take caution
+  * `AckTup[T]` type directly (or, `(Promise[Unit](), T)`), you must take caution
   * that the promise is not dropped on the floor. This means, every time an
   * exception could be thrown, you must catch it and propagate said exception to
   * the Promise by calling `promise.fail(ex)`.
@@ -79,7 +79,7 @@ object RabbitSource {
         channelDirective {
           bindingDirective({
             handler.happly { l =>
-              val p = Promise[Unit]
+              val p = Promise[Unit]()
               input.offer((p, tupler(l)))
               ack(p.future)
             }
@@ -89,15 +89,15 @@ object RabbitSource {
 
       subscription.closed.onComplete {
         case Failure(ex) =>
-          if (! input.watchCompletion.isCompleted)
+          if (! input.watchCompletion().isCompleted)
             input.fail(ex)
         case Success(_) =>
-          if (! input.watchCompletion.isCompleted)
+          if (! input.watchCompletion().isCompleted)
             input.complete()
       }
 
       // Down stream terminated?
-      input.watchCompletion.onComplete {
+      input.watchCompletion().onComplete {
         case Success(_) =>
           /* If the consumer abort is scheduled before the ReceiveResult.Fail message (representing the failure
            * potentially causing the stream to stop), then we enter a potential infinite loop in which the message

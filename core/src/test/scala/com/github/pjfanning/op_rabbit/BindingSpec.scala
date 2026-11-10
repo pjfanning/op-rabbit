@@ -24,9 +24,9 @@ class BindingSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rabb
 
       import ExecutionContext.Implicits.global
 
-      implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+      implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
 
-      val consumerResult = List(Promise[String], Promise[String])
+      val consumerResult = List(Promise[String](), Promise[String]())
 
       val queues = (0 to 1) map { case idx =>
         _queueName() + idx
@@ -69,8 +69,8 @@ class BindingSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rabb
     it("properly declares the fanout binding") {
       import ExecutionContext.Implicits.global
 
-      val consumerResult = List(Promise[String], Promise[String])
-      implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+      val consumerResult = List(Promise[String](), Promise[String]())
+      implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
 
       val subscriptions = (0 to 1) map { case idx =>
         val queueName = _queueName() + idx
@@ -102,10 +102,10 @@ class BindingSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rabb
   describe("Binding.headers") {
     it("properly declares the header binding with appropriate type matching") {
       import ExecutionContext.Implicits.global
-      implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+      implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
       val queueName = _queueName()
-      val stringReceived = Promise[String]
-      val intReceived = Promise[String]
+      val stringReceived = Promise[String]()
+      val intReceived = Promise[String]()
       val subscriptionInt = Subscription.run(rabbitControl) {
         import Directives._
         channel() {
@@ -159,9 +159,9 @@ class BindingSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rabb
   describe("Binding.topic") {
     it("properly declares the topic binding with appropriate bindings") {
       import ExecutionContext.Implicits.global
-      implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+      implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
       val queueName = _queueName()
-      val received = Promise[String]
+      val received = Promise[String]()
       val subscription = Subscription.run(rabbitControl) {
         import Directives._
         channel() {

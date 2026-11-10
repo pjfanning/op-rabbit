@@ -1,7 +1,7 @@
 package com.github.pjfanning.op_rabbit
 
 import org.apache.pekko.actor.ActorRef
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
 
 trait SubscriptionRef {
@@ -47,7 +47,7 @@ private [op_rabbit] case class SubscriptionRefDirect(subscriptionActor: ActorRef
 }
 
 private [op_rabbit] case class SubscriptionRefProxy(subscriptionRef: Future[SubscriptionRef]) extends SubscriptionRef {
-  implicit val ec = SameThreadExecutionContext
+  implicit val ec: ExecutionContext = SameThreadExecutionContext
   val closed = subscriptionRef.flatMap(_.closed)
   val initialized = subscriptionRef.flatMap(_.initialized)
   def close(timeout: FiniteDuration = 5.minutes): Unit =

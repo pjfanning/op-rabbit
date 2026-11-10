@@ -23,8 +23,8 @@ class QueueSpec extends AnyFunSpec with ScopedFixtures with Matchers with Rabbit
     it("subscribes in such a way that the second subscription succeeds even if the queue doesn't match config") {
 
       import ExecutionContext.Implicits.global
-      implicit val recoveryStrategy = RecoveryStrategy.none
-      val consumerResult = List(Promise[String], Promise[String])
+      implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.none
+      val consumerResult = List(Promise[String](), Promise[String]())
 
       def getSubscription(p: Promise[Unit], leQueue: Binding.QueueDefinition[Binding.Concrete]) =
         Subscription.run(rabbitControl) {
@@ -43,7 +43,7 @@ class QueueSpec extends AnyFunSpec with ScopedFixtures with Matchers with Rabbit
 
       // we test passiveQueue a third time to check that the caching mechanism doesn't cause an issue
       List(queue, passiveQueue, passiveQueue).foreach { q =>
-        val p = Promise[Unit]
+        val p = Promise[Unit]()
         val subscription = getSubscription(p, q)
         await(subscription.initialized)
         rabbitControl ! Message.queue("hi", q.queueName)

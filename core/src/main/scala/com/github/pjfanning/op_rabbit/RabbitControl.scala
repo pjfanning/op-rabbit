@@ -4,7 +4,7 @@ import org.apache.pekko.actor.SupervisorStrategy._
 import org.apache.pekko.actor._
 import org.apache.pekko.util.Timeout
 import com.github.pjfanning.pekko.rabbitmq.{ ConnectionActor, CreateChannel, ChannelActor, ChannelCreated, ChannelMessage }
-import scala.concurrent.Promise
+import scala.concurrent.{ExecutionContext, Promise}
 import scala.concurrent.duration._
 
 object RabbitControl {
@@ -83,8 +83,8 @@ class RabbitControl(connection: Either[ConnectionParams, ActorRef]) extends Acto
   private var subscriptions = List.empty[ActorRef]
   private val deadLetters = context.system.deadLetters
 
-  implicit val timeout = Timeout(5.seconds)
-  implicit val ec = context.dispatcher
+  implicit val timeout: Timeout = Timeout(5.seconds)
+  implicit val ec: ExecutionContext = context.dispatcher
 
   var running: SubscriptionCommand = Run
 
@@ -123,13 +123,13 @@ class RabbitControl(connection: Either[ConnectionParams, ActorRef]) extends Acto
 
   def withChannel(publishChannel: ActorRef): Receive = {
     case m: Message =>
-      confirmedPublisher.tell(m, sender)
+      confirmedPublisher.tell(m, sender())
 
     case m: MessageForPublicationLike =>
       publishChannel ! ChannelMessage(m.apply, dropIfNoChannel = m.dropIfNoChannel)
 
     case GetConnectionActor =>
-      sender ! connectionActor
+      sender() ! connectionActor
 
     case Terminated(ref) if subscriptions.exists(_.path == ref.path) =>
       // TODO - move this logic to a subscription guardian actor? This is doing too much...
@@ -155,7 +155,7 @@ class RabbitControl(connection: Either[ConnectionParams, ActorRef]) extends Acto
       subscriptionActorRef ! running
       subscriptions = subscriptionActorRef :: subscriptions
       if (subscriptionActorRef != deadLetters)
-        sender ! SubscriptionRefDirect(subscriptionActorRef, initializedP.future, closedP.future)
+        sender() ! SubscriptionRefDirect(subscriptionActorRef, initializedP.future, closedP.future)
 
     case c: SubscriptionCommand =>
       running = c

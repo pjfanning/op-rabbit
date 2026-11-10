@@ -23,7 +23,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
     deleteQueue(name)
     r
   }
-  implicit val executionContext = ExecutionContext.global
+  implicit val executionContext: ExecutionContext = ExecutionContext.global
   trait RabbitFixtures {
     // import DefaultMarshalling._
     val queueName = _queueName()
@@ -36,7 +36,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
   }
   describe("consuming messages asynchronously") {
     it("receives and acks every message") {
-      implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+      implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
       new RabbitFixtures {
         import RabbitErrorLogging.defaultLogger
 
@@ -44,7 +44,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
 
 
         val range = (0 to 100)
-        val promises = range.map { _ => Promise[Int] }.toList
+        val promises = range.map { _ => Promise[Int]() }.toList
         val generator = new Random(123)
         val subscription = Subscription.run(rabbitControl) {
           import Directives._
@@ -78,7 +78,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
   describe("RecoveryStrategy none") {
     it("shuts down the subscription and passes the exception through subscriptionRef.closed") {
       new RabbitFixtures {
-        implicit val recoveryStrategy = RecoveryStrategy.none
+        implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.none
         case object LeError extends Exception("le error")
 
         val subscription = Subscription.run(rabbitControl) {
@@ -104,7 +104,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
   describe("RecoveryStrategy limitedRedeliver") {
     trait RedeliveryFixtures {
       var errors = 0
-      implicit val logging = new RabbitErrorLogging {
+      implicit val logging: RabbitErrorLogging = new RabbitErrorLogging {
         def apply(name: String, message: String, exception: Throwable, consumerTag: String, envelope: Envelope,
           properties: BasicProperties, body: Array[Byte]): Unit = {
           println(s"ERROR ${bodyAsString(body, properties)}")
@@ -113,7 +113,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
       }
       val range = (0 to 9)
       val seen = range.map { _ => new AtomicInteger() }.toList
-      lazy val promises = range.map { i => Stream.continually(Promise[Int]).take(retryCount + 1).toVector }.toList
+      lazy val promises = range.map { i => Stream.continually(Promise[Int]()).take(retryCount + 1).toVector }.toList
       val retryCount: Int
       val queueName: String
       def awaitDeliveries() = Await.result(
@@ -143,7 +143,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
       new RedeliveryFixtures with RabbitFixtures {
         val retryCount = 1
 
-        implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver(redeliverDelay = 100.millis, retryCount = 1)
+        implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver(redeliverDelay = 100.millis, retryCount = 1)
 
         val subscriptionDef = countAndRejectSubscription()
 
@@ -166,7 +166,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
           val retryCount         = 2
 
           try {
-            implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver(
+            implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver(
               redeliverDelay = 100.millis,
               retryCount     = retryCount,
               onAbandon      = RecoveryStrategy.abandonedQueue(3.seconds))
@@ -210,7 +210,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
 
           try {
             (List(3.seconds, 4.seconds)) foreach { time =>
-              implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver(
+              implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver(
                 redeliverDelay = 100.millis,
                 retryCount     = 1,
                 onAbandon      = RecoveryStrategy.abandonedQueue(time))
@@ -236,11 +236,11 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
 
     it("waits until all pending promises are acked prior to closing the subscription") {
       new RabbitFixtures {
-        implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
-        val ackThem        = Promise[Unit]
+        implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
+        val ackThem        = Promise[Unit]()
         val range          = (0 to 15).toList
         val receivedCounts = scala.collection.mutable.IndexedSeq.fill(range.length)(0)
-        val received       = range map { i => Promise[Unit] }
+        val received       = range map { i => Promise[Unit]() }
         val firstEight     = received.take(8)
 
         def getSubscription(n: Int) = Subscription.run(rabbitControl) {
@@ -296,12 +296,12 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
 
     it("does not wait for pending promises to be acked when aborting the subscription") {
       new RabbitFixtures {
-        val ackThem = Promise[Unit]
+        val ackThem = Promise[Unit]()
         val range = (0 to 15).toList
         val receivedCounts = scala.collection.mutable.IndexedSeq.fill(range.length)(0)
-        val received = range map { i => Promise[Unit] }
+        val received = range map { i => Promise[Unit]() }
         val firstEight = received.take(8)
-        implicit val recoveryStrategy = RecoveryStrategy.limitedRedeliver()
+        implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
 
         val subscription = Subscription.run(rabbitControl) {
           import Directives._
@@ -323,7 +323,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
         await(Future.sequence(firstEight.map(_.future)))
         println("Round 1 complete")
         println(s"receivedCounts = ${receivedCounts}")
-        subscription.abort
+        subscription.abort()
         ackThem.completeWith(subscription.closed)
         await(subscription.closed) // the fact that we can get here is evidence that it works, since we don't even ack
                                    // the messages until the consumer is closed

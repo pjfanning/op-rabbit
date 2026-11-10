@@ -57,7 +57,7 @@ trait UnboundTypedHeader[T] extends (T => TypedHeader[T]) with PropertyExtractor
 
 private [op_rabbit] case class UnboundTypedHeaderLongToFiniteDuration(name: String)
     extends UnboundTypedHeader[FiniteDuration] {
-  protected val toHeaderValue = { d: FiniteDuration => HeaderValue(d.toMillis) }
+  protected val toHeaderValue = { (d: FiniteDuration) => HeaderValue(d.toMillis) }
   protected val fromHeaderValue = implicitly[FromHeaderValue[Long]].map(_.millis)
 }
 

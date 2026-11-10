@@ -61,7 +61,7 @@ private [op_rabbit] class ConfirmedPublisherActor(connection: ActorRef) extends 
       }
       heldMessages.clear()
     case message: Message =>
-      heldMessages.enqueue((message, sender))
+      heldMessages.enqueue((message, sender()))
     case ChannelDisconnected(ex) =>
       ()
     case Terminated(actorRef) if Some(actorRef) == channelActor =>
@@ -85,7 +85,7 @@ private [op_rabbit] class ConfirmedPublisherActor(connection: ActorRef) extends 
     case Terminated(actorRef) if Some(actorRef) == channelActor =>
       context stop self
     case message: Message =>
-      handleDelivery(channel, message, sender)
+      handleDelivery(channel, message, sender())
     case Ack(deliveryTag, multiple) =>
       handleAck(resolveTags(deliveryTag, multiple))(true)
     case Nack(deliveryTag, multiple) =>

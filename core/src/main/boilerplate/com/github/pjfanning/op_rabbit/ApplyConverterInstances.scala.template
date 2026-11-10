@@ -16,10 +16,10 @@
 
 package com.github.pjfanning.op_rabbit
 
-import shapeless._
+import com.github.pjfanning.op_rabbit.compat._
 
 private [op_rabbit] abstract class ApplyConverterInstances {
-[#  implicit def hac1[[#T1#]] = new ApplyConverter[[#T1# :: ] :: HNil] {
+[#  implicit def hac1[[#T1#]]: ApplyConverter[[#T1# :: ] :: HNil] { type In = ([#T1#]) => Handler } = new ApplyConverter[[#T1# :: ] :: HNil] {
     type In = ([#T1#]) => Handler
     def apply(fn: In) = {
       case [#t1# :: ] :: HNil => fn([#t1#])

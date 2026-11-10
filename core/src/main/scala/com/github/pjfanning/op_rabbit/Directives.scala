@@ -4,7 +4,7 @@ import com.github.pjfanning.op_rabbit.properties.PropertyExtractor
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
-import shapeless._
+import com.github.pjfanning.op_rabbit.compat._
 import com.github.pjfanning.op_rabbit.Binding._
 import com.github.pjfanning.op_rabbit.Exchange.ExchangeType
 
@@ -241,13 +241,13 @@ object Directives extends Directives {
 
   case class Ackable(handler: Handler)
   object Ackable extends (Handler => Ackable) {
-    implicit def ackableFromFuture(f: Future[_])(implicit ec: ExecutionContext) = Ackable({ (p, delivery) =>
+    implicit def ackableFromFuture(f: Future[_])(implicit ec: ExecutionContext): Ackable = Ackable({ (p, delivery) =>
       p.completeWith(
         f.map(_ => ReceiveResult.Ack(delivery)).recover { case ex => ReceiveResult.Fail(delivery, None, ex) }
       )
     })
 
-    implicit def ackableFromTry(t: Try[_]) = Ackable({ (p, delivery) =>
+    implicit def ackableFromTry(t: Try[_]): Ackable = Ackable({ (p, delivery) =>
       t match {
         case Success(_) =>
           p.success(ReceiveResult.Ack(delivery))
@@ -270,6 +270,6 @@ object Directives extends Directives {
 
     val unitAck =  Ackable(ackHandler)
 
-    implicit def ackableFromUnit(u: Unit) = unitAck
+    implicit def ackableFromUnit(u: Unit): Ackable = unitAck
   }
 }

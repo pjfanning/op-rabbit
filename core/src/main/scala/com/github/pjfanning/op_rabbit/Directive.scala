@@ -3,8 +3,8 @@ package com.github.pjfanning.op_rabbit
 import scala.concurrent.Promise
 import scala.annotation.unchecked.uncheckedVariance
 import scala.util.Success
-import shapeless._
-import shapeless.ops.hlist.Prepend
+import com.github.pjfanning.op_rabbit.compat._
+
 import scala.language.implicitConversions
 
 /**
@@ -16,7 +16,7 @@ private [op_rabbit] trait ConjunctionMagnet[L <: HList] {
 }
 
 private [op_rabbit] object ConjunctionMagnet {
-  implicit def fromDirective[L <: HList, R <: HList](other: Directive[R])(implicit p: Prepend[L, R]) =
+  implicit def fromDirective[L <: HList, R <: HList](other: Directive[R])(implicit p: Prepend[L, R]): ConjunctionMagnet[L] { type Out = Directive[p.Out] } =
     new ConjunctionMagnet[L] {
       type Out = Directive[p.Out]
       def apply(underlying: Directive[L]): Out =
@@ -24,7 +24,7 @@ private [op_rabbit] object ConjunctionMagnet {
           def happly(f: p.Out ⇒ Handler) =
             underlying.happly { prefix ⇒
               other.happly { suffix ⇒
-                f(prefix ++ suffix)
+                f(p(prefix, suffix))
               }
             }
         }
