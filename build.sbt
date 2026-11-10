@@ -124,10 +124,8 @@ lazy val `pekko-stream` = (project in file("./addons/pekko-stream")).
   settings(
     name := "op-rabbit-pekko-stream",
     libraryDependencies ++= Seq(
-      "com.github.pjfanning" %% "acked-streams" % "1.0.1",
+      "com.github.pjfanning" %% "acked-streams" % "2.0.0",
       "org.apache.pekko" %% "pekko-stream" % pekkoVersion),
-    // TODO: remove once acked-streams is released against Pekko 2 (acked-streams 1.0.1 depends on pekko-stream 1.0.1)
-    libraryDependencySchemes += "org.apache.pekko" %% "pekko-stream" % VersionScheme.Always,
     Test / unmanagedResourceDirectories ++= Seq(
       file(".").getAbsoluteFile / "core" / "src" / "test" / "resources"),
     Test / unmanagedSourceDirectories ++= Seq(
