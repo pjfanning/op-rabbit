@@ -109,6 +109,14 @@ specify addresses of your rabbitMQ cluster, and if one of the
 instances goes down, your application will automatically reconnect to
 another member of the cluster.
 
+To use TLS with your own `SSLContext` (for example, one with a client certificate or a custom trust store), build
+the `ConnectionParams` in code and pass it as `sslContext`, along with `ssl = true`:
+
+```scala
+val params = ConnectionParams.fromConfig().copy(ssl = true, sslContext = Some(mySslContext))
+val rabbitControl = actorSystem.actorOf(Props(new RabbitControl(params)))
+```
+
 `topic-exchange-name` is the default topic exchange to use; this can
 be overriden by passing `exchange = "my-topic"` to
 [TopicBinding](http://spingo-oss.s3.amazonaws.com/docs/op-rabbit/core/current/index.html#com.spingo.op_rabbit.TopicBinding)

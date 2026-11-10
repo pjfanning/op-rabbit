@@ -39,7 +39,11 @@ case class ConnectionParams(
   saslConfig: SaslConfig = DefaultSaslConfig.PLAIN,
   sharedExecutor: Option[java.util.concurrent.ExecutorService] = None,
   shutdownTimeout: Int = ConnectionFactory.DEFAULT_SHUTDOWN_TIMEOUT,
-  socketFactory: SocketFactory = SocketFactory.getDefault
+  socketFactory: SocketFactory = SocketFactory.getDefault,
+  /** The SSLContext to use when `ssl` is enabled, e.g. one configured with a client certificate and/or a custom trust
+    * store. When set, it takes precedence over `trustEverything`. Ignored when `ssl` is false.
+    */
+  sslContext: Option[SSLContext] = None
 ) {
   // TODO - eliminate ClusterConnectionFactory after switching to use RabbitMQ's topology recovery features.
   protected [op_rabbit] def applyTo(factory: ClusterConnectionFactory): Unit = {
@@ -59,12 +63,15 @@ case class ConnectionParams(
     factory.setShutdownTimeout(shutdownTimeout)
     factory.setSocketFactory(socketFactory)
     if (ssl) {
-      if (trustEverything) {
-        factory.useSslProtocol()
-      } else {
-        val protocol = ConnectionFactory.computeDefaultTlsProtocol(
-          SSLContext.getDefault.getSupportedSSLParameters.getProtocols)
-        factory.useSslProtocol(protocol, createDefaultTrustManager())
+      sslContext match {
+        case Some(context) =>
+          factory.useSslProtocol(context)
+        case None if trustEverything =>
+          factory.useSslProtocol()
+        case None =>
+          val protocol = ConnectionFactory.computeDefaultTlsProtocol(
+            SSLContext.getDefault.getSupportedSSLParameters.getProtocols)
+          factory.useSslProtocol(protocol, createDefaultTrustManager())
       }
     }
   }
