@@ -10,8 +10,7 @@ Run the following:
     make README.md
     make clean
     sbt test
-    sbt publishSigned
-    sbt sonatypeReleaseAll
+    sbt +publishSigned sonaRelease
     make docs publish
     git add README.md project/version.properties
     git commit -m v$version

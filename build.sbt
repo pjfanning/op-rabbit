@@ -39,13 +39,18 @@ val commonSettings = Seq(
     }
   },
   publishMavenStyle := true,
+  // Sonatype Central Portal publishing (built into sbt 1.11+)
+  // release: sbt +publishSigned sonaRelease
   publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value)
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+    val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+    if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+    else localStaging.value
   },
+  credentials ++= (for {
+    user <- sys.env.get("SONATYPE_USERNAME")
+    pass <- sys.env.get("SONATYPE_PASSWORD")
+  } yield Credentials("Sonatype Nexus Repository Manager", "central.sonatype.com", user, pass)).toSeq,
+  Test / publishArtifact := false,
   licenses := Seq("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
   homepage := Some(url("https://github.com/pjfanning/op-rabbit")),
   pomExtra := {
