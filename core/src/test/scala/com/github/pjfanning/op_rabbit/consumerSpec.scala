@@ -239,7 +239,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
         implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
         val ackThem        = Promise[Unit]()
         val range          = (0 to 15).toList
-        val receivedCounts = scala.collection.mutable.IndexedSeq.fill(range.length)(0)
+        val receivedCounts = new java.util.concurrent.atomic.AtomicIntegerArray(range.length)
         val received       = range map { i => Promise[Unit]() }
         val firstEight     = received.take(8)
 
@@ -248,7 +248,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
           channel(qos = 8) {
             consume(queue(queueName, durable = true, exclusive = false, autoDelete = false)) {
               body(as[Int]) { i =>
-                receivedCounts(i) = receivedCounts(i) + 1
+                receivedCounts.incrementAndGet(i)
                 received(i).success(())
                 ackThem.future.map { _ => Thread.sleep(50 * i.toLong) }
                 ack(())
@@ -290,7 +290,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
             channel.queueDelete(queueName)
         }
 
-        receivedCounts should be (range map (_ => 1))
+        range.map(receivedCounts.get) should be (range map (_ => 1))
       }
     }
 
@@ -298,7 +298,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
       new RabbitFixtures {
         val ackThem = Promise[Unit]()
         val range = (0 to 15).toList
-        val receivedCounts = scala.collection.mutable.IndexedSeq.fill(range.length)(0)
+        val receivedCounts = new java.util.concurrent.atomic.AtomicIntegerArray(range.length)
         val received = range map { i => Promise[Unit]() }
         val firstEight = received.take(8)
         implicit val recoveryStrategy: RecoveryStrategy = RecoveryStrategy.limitedRedeliver()
@@ -309,7 +309,7 @@ class ConsumerSpec extends AnyFunSpec with Matchers with ScopedFixtures with Rab
             consume(queue(queueName, durable = true, exclusive = false, autoDelete = false)) {
               body(as[Int]) { i =>
                 println(s"${i} received")
-                receivedCounts(i) = receivedCounts(i) + 1
+                receivedCounts.incrementAndGet(i)
                 received(i).success(())
                 ackThem.future.map { _ => Thread.sleep(50 * i.toLong) }
                 ack(())
