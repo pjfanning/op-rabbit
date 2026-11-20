@@ -7,14 +7,13 @@ import com.rabbitmq.client.AMQP.BasicProperties
 import com.rabbitmq.client.Envelope
 import com.github.pjfanning.acked.AckedSink
 import com.github.pjfanning.op_rabbit.Directives._
-import com.github.pjfanning.op_rabbit.helpers.{DeleteQueue, RabbitTestHelpers}
+import com.github.pjfanning.op_rabbit.helpers.RabbitTestHelpers
 import com.spingo.scoped_fixtures.ScopedFixtures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.concurrent.duration._
-import scala.util.Try
 
 class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with RabbitTestHelpers {
 
@@ -118,13 +117,7 @@ class RabbitSourceSpec extends AnyFunSpec with Matchers with ScopedFixtures with
           subscription.close()
           await(subscription.closed)
         } finally {
-          println("deleting")
-          val delete = DeleteQueue(queueName())
-          rabbitControl ! DeleteQueue(queueName())
-          Try {
-            await(delete.processed, 1.second)
-            println("deleted")
-          }
+          deleteQueue(queueName())
         }
       }
     }
