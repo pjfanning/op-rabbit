@@ -6,7 +6,7 @@ import org.apache.pekko.actor.{ActorRef, ActorSystem}
 import org.apache.pekko.pattern.ask
 import org.apache.pekko.util.Timeout
 import com.rabbitmq.client.Channel
-import com.github.pjfanning.op_rabbit.RabbitControl
+import com.github.pjfanning.op_rabbit.{ClusterConnectionFactory, ConnectionParams, RabbitControl}
 import com.github.pjfanning.op_rabbit.{MessageForPublicationLike, RabbitMarshaller, RabbitUnmarshaller}
 import com.spingo.scoped_fixtures.ScopedFixtures
 
@@ -73,11 +73,11 @@ trait RabbitTestHelpers extends ScopedFixtures {
     await(done.future)
   }
 
-  def deleteQueue(queueName: String): Unit = {
-    val deleteQueue = DeleteQueue(queueName)
-    rabbitControl ! deleteQueue
-    await(deleteQueue.processed)
-  }
+  // Deletes the queue over a dedicated, short-lived connection rather than via rabbitControl, so that test
+  // setup/teardown does not depend on the state of the RabbitControl under test (e.g. a publish channel that is
+  // mid-recovery, which can silently drop the request and leave the caller waiting on a timeout).
+  def deleteQueue(queueName: String): Unit =
+    RabbitTestHelpers.deleteQueue(queueName)
 
   implicit val simpleIntMarshaller: RabbitMarshaller[Int] with RabbitUnmarshaller[Int] = new RabbitMarshaller[Int] with RabbitUnmarshaller[Int] {
     val contentType = "text/plain"
@@ -89,5 +89,19 @@ trait RabbitTestHelpers extends ScopedFixtures {
     def unmarshall(value: Array[Byte], contentType: Option[String], charset: Option[String]) = {
       new String(value).toInt
     }
+  }
+}
+
+object RabbitTestHelpers {
+  private lazy val connectionFactory = {
+    val factory = new ClusterConnectionFactory
+    ConnectionParams.fromConfig().applyTo(factory)
+    factory
+  }
+
+  def deleteQueue(queueName: String): Unit = {
+    val connection = connectionFactory.newConnection()
+    try connection.createChannel().queueDelete(queueName)
+    finally connection.close(5000)
   }
 }
